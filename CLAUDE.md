@@ -57,10 +57,10 @@ promoted from one to the other.
 
 | | Production | UAT |
 |---|---|---|
-| URL | `https://__PRIMARY_DOMAIN__` | `https://uat.__PRIMARY_DOMAIN__` |
-| Cluster | `__PROJECT_SLUG__-cluster` | `__PROJECT_SLUG__-uat-cluster` |
-| Services | `__PROJECT_SLUG__-web`, `__PROJECT_SLUG__-mcp` | `__PROJECT_SLUG__-uat-web`, `__PROJECT_SLUG__-uat-mcp` |
-| Secret | `prod/__PROJECT_SLUG__/app` | `uat/__PROJECT_SLUG__/app` |
+| URL | `https://leaco.launchpadinc.org` | `https://leaco-uat.launchpadinc.org` |
+| Cluster | `leaco-cluster` | `leaco-uat-cluster` |
+| Services | `leaco-web`, `leaco-mcp` | `leaco-uat-web`, `leaco-uat-mcp` |
+| Secret | `prod/leaco/app` | `uat/leaco/app` |
 | Terraform root | `infra/environments/production` | `infra/environments/uat` |
 
 ## Commands

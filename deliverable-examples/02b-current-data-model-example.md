@@ -90,7 +90,7 @@ The Drive folder mixes structured, semi-structured, and unstructured file types 
 |---|---|---|---|---|---|
 | volunteer_id | text (manually assigned) | `VOL-0091` | Required | Unreliable — no standard ID scheme, some rows blank | |
 | volunteer_name | text | `Pat Nguyen` | Required | Source of truth | |
-| email | text | `pat.nguyen@email.com` | Optional | Source of truth | |
+| email | text | `pat.nguyen@example.com` | Optional | Source of truth | |
 | program_assigned | dropdown/category | `Career Readiness` | Optional | Source of truth | Same value list as SIS `program_track` — possible mapping opportunity |
 | hours_committed | number | `40` | Optional | Source of truth | |
 | hours_completed | number (manually totaled) | `27` | Optional | Unreliable — manually summed at bottom of sheet, not a per-row formula, prone to arithmetic error | |

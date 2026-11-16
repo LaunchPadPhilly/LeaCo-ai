@@ -1,6 +1,6 @@
 variable "aws_region" {
   type    = string
-  default = "__AWS_REGION__"
+  default = "us-east-1"
 }
 
 variable "environment" {
@@ -12,25 +12,25 @@ variable "environment" {
 variable "name_prefix" {
   description = "Prefix for every resource in this environment. Convention: <slug> for production, <slug>-uat for UAT."
   type        = string
-  default     = "__PROJECT_SLUG__-uat"
+  default     = "leaco-uat"
 }
 
 variable "repository" {
   description = "Repository tag applied to every resource."
   type        = string
-  default     = "__GITHUB_REPO__"
+  default     = "LeaCo-ai"
 }
 
 variable "domain_name" {
   description = "Hostname the ALB certificate is issued for. The registrar CNAME is placed by hand (see infra/README.md)."
   type        = string
-  default     = "uat.__PRIMARY_DOMAIN__"
+  default     = "leaco-uat.launchpadinc.org"
 }
 
 variable "app_secret_name" {
   description = "Secrets Manager secret holding the flat JSON of runtime keys. Terraform creates the container only; values are always human-written."
   type        = string
-  default     = "uat/__PROJECT_SLUG__/app"
+  default     = "uat/leaco/app"
 }
 
 variable "web_secret_keys" {
@@ -53,7 +53,7 @@ variable "mcp_secret_keys" {
 variable "db_name" {
   description = "Initial database name. Must match the path segment of DATABASE_URL in the secret."
   type        = string
-  default     = "__PROJECT_SLUG__"
+  default     = "leaco"
 }
 
 variable "db_engine_version" {
