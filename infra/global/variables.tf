@@ -43,7 +43,7 @@ variable "github_oidc_subject_prefix" {
     this value and silently breaks every deploy until it is updated.
   EOT
   type        = string
-  default     = ""
+  default     = "repo:LaunchPadPhilly@156241682/LeaCo-ai@1455719719"
 }
 
 variable "environment_name_prefixes" {

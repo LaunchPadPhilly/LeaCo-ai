@@ -64,7 +64,7 @@ image_uris = {
 
 ```bash
 cat infra/environments/uat/terraform.tfvars | grep -vE '^\s*#'
-terraform -chdir=infra/environments/uat plan -out tf.plan | grep -E '^Plan:|must be replaced|will be destroyed|Warning|activation'
+terraform -chdir=infra/environments/uat plan -no-color -out tf.plan | grep -E '^Plan:|must be replaced|will be destroyed|Warning|activation'
 ```
 
 **EVIDENCE 10.3** — paste both outputs.
