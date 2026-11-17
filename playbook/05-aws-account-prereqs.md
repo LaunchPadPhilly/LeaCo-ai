@@ -79,4 +79,5 @@ aws service-quotas get-service-quota --service-code rds --quota-code L-7B6409FD 
 |---|---|
 | `AccessDenied` on `create-open-id-connect-provider` | The operator identity lacks IAM rights. This is an account-admin task; have the admin run step 2. |
 | `EntityAlreadyExists` | Provider exists; use the list output. |
+| `AccessDeniedException` on `servicequotas:GetServiceQuota` | Read the limits from the services instead: `aws elbv2 describe-account-limits --query "Limits[?Name=='application-load-balancers'].Max" --output text` and `aws rds describe-account-attributes --query "AccountQuotas[?AccountQuotaName=='DBInstances'].{max:Max,used:Used}"`. In a shared account, subtract what is already in use (`aws elbv2 describe-load-balancers --query 'length(LoadBalancers)'`). |
 | No default VPC | Create one with `aws ec2 create-default-vpc` (account admin) or plan explicit subnets. |

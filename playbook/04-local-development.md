@@ -92,7 +92,7 @@ variable, never into the chat:
 ```bash
 read -rs AGENT_TOKEN   # paste the token, press Enter; nothing is echoed
 curl --silent --request POST http://localhost:3001/api/mcp \
-  --header 'Content-Type: application/json' --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' --header 'Accept: application/json, text/event-stream' \
   --header "Authorization: Bearer $AGENT_TOKEN" \
   --data '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"service_status","arguments":{}}}'
 ```

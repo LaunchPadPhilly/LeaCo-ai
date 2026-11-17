@@ -32,7 +32,7 @@ grep -n -E '^(enable_https|activate_services|image_uris)' infra/environments/uat
 
 ```bash
 terraform -chdir=infra/environments/uat init -backend-config=../../my.backend.hcl
-terraform -chdir=infra/environments/uat plan -out tf.plan | grep -E '^Plan:|must be replaced|will be destroyed'
+terraform -chdir=infra/environments/uat plan -no-color -out tf.plan | grep -E '^Plan:|must be replaced|will be destroyed'
 ```
 
 **EVIDENCE 08.2** — paste the output.
@@ -93,7 +93,7 @@ Repeat every few minutes until `ISSUED`. Propagation can take up to 30 minutes.
 Set `enable_https = true` in `infra/environments/uat/terraform.tfvars`, then:
 
 ```bash
-terraform -chdir=infra/environments/uat plan -out tf.plan | grep -E '^Plan:|must be replaced|will be destroyed'
+terraform -chdir=infra/environments/uat plan -no-color -out tf.plan | grep -E '^Plan:|must be replaced|will be destroyed'
 ```
 
 **EVIDENCE 08.6** — paste it.
