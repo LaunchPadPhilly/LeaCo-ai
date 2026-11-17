@@ -17,6 +17,7 @@ the two disagree, the play follows the code and says so.
 | 01 | [Toolchain and access preflight](01-preflight.md) | Every tool, account and permission in hand before anything is created | — |
 | 02 | [Template initialization](02-template-init.md) | Placeholders filled, coupled values consistent, the break-glass token decision made, gates green | 01 |
 | 03 | [Google OAuth client](03-google-oauth-client.md) | A Web OAuth client with local and UAT redirect URIs registered | 02 |
+| 03b | [Dropbox app and refresh token](03b-dropbox-app.md) | Read-only Dropbox app, refresh token from a dedicated account, client folder listed locally (Dropbox clients only) | 02 |
 | 04 | [Local development](04-local-development.md) | Web + MCP running locally; authenticated MCP tool call succeeds | 02, 03 |
 | 05 | [AWS account prerequisites](05-aws-account-prereqs.md) | OIDC provider, operator identity, region fixed | 01 |
 | 06 | [Terraform bootstrap and global](06-terraform-bootstrap-global.md) | State bucket, ECR repositories, GitHub deploy role | 02, 05 |
@@ -51,6 +52,7 @@ exposed: say so at once, rotate it (Play 14), then continue.
 - Any line of `.env.local`, `.env.uat`, `.env.production`, or a filled secret JSON.
 - `aws secretsmanager get-secret-value` output.
 - `DATABASE_URL`, `GOOGLE_CLIENT_SECRET`, `MCP_SERVER_TOKEN`, agent tokens, OAuth codes.
+- `DROPBOX_APP_SECRET`, `DROPBOX_REFRESH_TOKEN`, or the code Dropbox shows after **Allow**.
 - `terraform.tfstate` or `terraform show` output (state can embed credentials).
 - `aws ecs describe-task-definition` output is safe: it holds secret *ARNs*, not values.
 
