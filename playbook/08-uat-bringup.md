@@ -18,7 +18,7 @@ The example root's defaults already describe UAT (`environment = "uat"`,
 
 ```bash
 cp -r infra/environments/example infra/environments/uat
-grep -nE 'default *= *"' infra/environments/uat/variables.tf | grep -E 'environment|name_prefix|domain_name|app_secret_name|db_name'
+grep -nE '^variable|^ *default *= *"' infra/environments/uat/variables.tf | grep -A1 -E '"(environment|name_prefix|domain_name|app_secret_name|db_name)"' | grep default
 grep -n 'key ' infra/environments/uat/versions.tf
 grep -n -E '^(enable_https|activate_services|image_uris)' infra/environments/uat/terraform.tfvars
 ```
@@ -32,7 +32,7 @@ grep -n -E '^(enable_https|activate_services|image_uris)' infra/environments/uat
 
 ```bash
 terraform -chdir=infra/environments/uat init -backend-config=../../my.backend.hcl
-terraform -chdir=infra/environments/uat plan -out tf.plan | grep -E '^Plan:|must be replaced|will be destroyed'
+terraform -chdir=infra/environments/uat plan -no-color -out tf.plan | grep -E '^Plan:|must be replaced|will be destroyed'
 ```
 
 **EVIDENCE 08.2** — paste the output.
@@ -93,7 +93,7 @@ Repeat every few minutes until `ISSUED`. Propagation can take up to 30 minutes.
 Set `enable_https = true` in `infra/environments/uat/terraform.tfvars`, then:
 
 ```bash
-terraform -chdir=infra/environments/uat plan -out tf.plan | grep -E '^Plan:|must be replaced|will be destroyed'
+terraform -chdir=infra/environments/uat plan -no-color -out tf.plan | grep -E '^Plan:|must be replaced|will be destroyed'
 ```
 
 **EVIDENCE 08.6** — paste it.
@@ -137,6 +137,7 @@ git push origin uat
 
 | Symptom | Cause / fix |
 |---|---|
+| Step 2 apply ends with `creating ECS Service … target group … does not have an associated load balancer` for both services | Expected with `enable_https = false`: the target groups attach only through the :443 listener and its `/api/mcp` rule. Everything else was created; the services were not, so nothing needs cleaning up. Do not retry. Continue: step 3 shows no services yet, and step 5's plan is `4 to add` (the listener, the rule, both services). |
 | Plan wants to replace something later | Never apply a replacement without a recorded decision. SG descriptions, RDS encryption, `db_name`, identifiers are ForceNew. |
 | `data.aws_subnets.public` returns empty | No default VPC (Play 05 step 3). Supply explicit subnet ids in `main.tf`. |
 | ACM stuck `PENDING_VALIDATION` | CNAME name or value copied with a trailing dot mismatch or wrong zone. Re-check with `dig +short CNAME <validation name>`. |

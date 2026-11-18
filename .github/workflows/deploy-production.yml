@@ -37,15 +37,15 @@ permissions:
   id-token: write
 
 env:
-  AWS_REGION: __AWS_REGION__
-  ECR_REPOSITORY: __PROJECT_SLUG__-web
-  ECR_REPOSITORY_MCP: __PROJECT_SLUG__-mcp
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: leaco-web
+  ECR_REPOSITORY_MCP: leaco-mcp
 
   # Production names: <name_prefix>-cluster / -web / -mcp, from infra/environments/production.
-  PROD_CLUSTER: __PROJECT_SLUG__-cluster
-  PROD_WEB_SERVICE: __PROJECT_SLUG__-web
-  PROD_MCP_SERVICE: __PROJECT_SLUG__-mcp
-  PROD_URL: https://__PRIMARY_DOMAIN__
+  PROD_CLUSTER: leaco-cluster
+  PROD_WEB_SERVICE: leaco-web
+  PROD_MCP_SERVICE: leaco-mcp
+  PROD_URL: https://leaco.launchpadinc.org
 
 jobs:
   deploy-production:

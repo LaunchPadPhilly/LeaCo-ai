@@ -15,7 +15,7 @@ The bucket name was the STATE_BUCKET answer given to the init script (Play 02).
 ```bash
 grep -n default infra/bootstrap/variables.tf
 terraform -chdir=infra/bootstrap init
-terraform -chdir=infra/bootstrap plan -out tf.plan | grep -E '^Plan:'
+terraform -chdir=infra/bootstrap plan -no-color -out tf.plan | grep -E '^Plan:'
 ```
 
 **EVIDENCE 06.1** — paste the `Plan:` line.
@@ -78,7 +78,7 @@ that the variable was set to the printed prefix.
 
 ```bash
 terraform -chdir=infra/global init -backend-config=../my.backend.hcl
-terraform -chdir=infra/global plan -out tf.plan | grep -E '^Plan:'
+terraform -chdir=infra/global plan -no-color -out tf.plan | grep -E '^Plan:'
 ```
 
 **EVIDENCE 06.6** — paste the `Plan:` line.

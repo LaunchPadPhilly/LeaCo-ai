@@ -229,7 +229,7 @@ and the `bootstrap_admin_self_heal` activity event.
 
 ```bash
 terraform -chdir=infra/environments/uat init -backend-config=../../my.backend.hcl
-terraform -chdir=infra/environments/uat plan -out tf.plan | grep -E '^Plan:|must be replaced|will be destroyed'
+terraform -chdir=infra/environments/uat plan -no-color -out tf.plan | grep -E '^Plan:|must be replaced|will be destroyed'
 ```
 
 Apply only when the plan contains no replacement or destroy you did not decide on. A

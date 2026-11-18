@@ -13,6 +13,7 @@ load, taken from the specialist reviews.
 | 01 Preflight | 2 | High | Installing tools. The trap is permissions: the template ships no operator IAM policy, so bring-up realistically runs as an admin identity. Learn: AWS profiles and `sts get-caller-identity`. |
 | 02 Template init | 2 | High | The init script is deterministic and self-checking. The break-glass token decision is the only judgment call and the play makes it binary. Learn: what a placeholder rewrite touches. |
 | 03 Google OAuth client | 3 | Medium | Console clicks, but the consent-screen type and byte-exact redirect URIs cause most first-time failures. Learn: the authorization-code redirect flow. |
+| 03b Dropbox app | 3 | Medium | Console clicks plus a one-time consent that must happen as the *dedicated* account, not the developer's. The script keeps secrets out of the chat. Team-space folders and client-side app restrictions are the likely stalls. Learn: refresh tokens vs. access tokens. |
 | 04 Local development | 3 | Medium | Four different env-loading mechanisms and a one-shot admin bootstrap. `pnpm run test` names faults precisely, which helps. Learn: `.env.local` is loaded relative to the repo root; the first login is special. |
 | 05 AWS prerequisites | 3 | High | Three commands; the OIDC provider may need an account admin. Learn: what an IAM identity provider is. |
 | 06 Bootstrap and global | 4 | Medium | Local state that must be backed up; backend partial config on every `init`; OIDC trust-policy subjects. Learn: Terraform state and backends. |

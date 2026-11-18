@@ -21,9 +21,19 @@ let parse;
 try {
 	parse = createRequire(`${repoRoot}/package.json`)('pg-connection-string').parse;
 } catch {
+	// Under pnpm, pg-connection-string is only a transitive dependency (of pg) and
+	// does not resolve from the repo root, so this fallback is the normal path.
+	// It must decode user and password, or the build's round-trip check compares
+	// the original password against undefined and always fails.
 	parse = (s) => {
 		const u = new URL(s.replace(/^postgres(ql)?:/, 'https:'));
-		return { host: u.hostname, port: u.port, database: u.pathname.slice(1) };
+		return {
+			user: decodeURIComponent(u.username),
+			password: decodeURIComponent(u.password),
+			host: u.hostname,
+			port: u.port,
+			database: decodeURIComponent(u.pathname.slice(1))
+		};
 	};
 }
 const RESERVED = /[#?/@[\]:<>"{}|\\^`\s]/;
@@ -124,7 +134,7 @@ function build() {
 	const pwFile = requireEnv('PW_FILE');
 	const urlFile = requireEnv('URL_FILE');
 	const mode = requireEnv('BUILD_MODE');
-	const dbName = process.env.DB_NAME || '__PROJECT_SLUG__';
+	const dbName = process.env.DB_NAME || 'leaco';
 	let user = process.env.DB_USER || '';
 	let rawPassword;
 
