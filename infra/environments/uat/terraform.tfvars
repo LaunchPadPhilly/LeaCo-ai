@@ -10,5 +10,8 @@
 #        }
 # After activation, CI owns image rollout; these pins are a recovery baseline only.
 enable_https      = true
-activate_services = false
-image_uris        = {}
+activate_services = true
+image_uris = {
+  web = "851725317896.dkr.ecr.us-east-1.amazonaws.com/leaco-web:3bc0650da10fa1e323011b45ea893be015309163"
+  mcp = "851725317896.dkr.ecr.us-east-1.amazonaws.com/leaco-mcp:3bc0650da10fa1e323011b45ea893be015309163"
+}

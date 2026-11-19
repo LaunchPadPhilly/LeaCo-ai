@@ -38,7 +38,9 @@ for r in <slug>-web <slug>-mcp; do
   aws ecr describe-images --repository-name "$r" --image-ids imageTag="$SHA" \
     --query 'imageDetails[0].{repo:repositoryName,tags:imageTags,digest:imageDigest,pushed:imagePushedAt,sizeMB:to_string(imageSizeInBytes)}' --output json
 done
-aws logs filter-log-events --log-group-name /ecs/<slug>-uat-web --filter-pattern '"migration"' \
+# Git Bash on Windows: MSYS_NO_PATHCONV stops /ecs/... being rewritten to a Windows path;
+# PYTHONUTF8 lets the AWS CLI print Prisma's emoji instead of failing with 'charmap' codec.
+MSYS_NO_PATHCONV=1 PYTHONUTF8=1 aws logs filter-log-events --log-group-name /ecs/<slug>-uat-web --filter-pattern '"migration"' \
   --start-time $(( $(date +%s) - 3600 ))000 --query 'events[].message' --output text | tail -n 8
 aws ecs describe-services --cluster <slug>-uat-cluster --services <slug>-uat-web <slug>-uat-mcp \
   --query 'services[].{name:serviceName,desired:desiredCount,running:runningCount,taskDef:taskDefinition}' --output json
