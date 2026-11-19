@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { prisma } from '$lib/server/prisma';
 import type { McpToolDefinition } from '$lib/server/mcp/handler';
+import { amplifiedTools } from '$lib/server/amplified/tools';
 
 /**
  * The tools this deployment exposes over MCP. Both entry points import this list
@@ -40,5 +41,8 @@ export const mcpTools: readonly McpToolDefinition[] = [
 			]);
 			return { status: 'ok', users, activeScopeGrants, checkedAt: new Date().toISOString() };
 		}
-	}
+	},
+	// Amplified Customer API connector (src/lib/server/amplified). Registered in every
+	// environment; returns a NOT_CONFIGURED error until AMPLIFIED_API_KEY is set.
+	...amplifiedTools
 ];
