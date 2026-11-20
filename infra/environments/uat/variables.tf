@@ -47,7 +47,7 @@ variable "web_secret_keys" {
 variable "mcp_secret_keys" {
   description = "Secret keys injected into the mcp container. Must include every key the tools in src/lib/server/mcp/tools.ts read."
   type        = list(string)
-  default     = ["DATABASE_URL", "MCP_OAUTH_ISSUER_URL", "MCP_SERVER_TOKEN"]
+  default     = ["AMPLIFIED_API_KEY", "DATABASE_URL", "MCP_OAUTH_ISSUER_URL", "MCP_SERVER_TOKEN"]
 }
 
 variable "db_name" {
