@@ -123,7 +123,14 @@ docs/leaco/                    this plan, open-questions.md, data-sources.md
 Every phase must pass `db:validate`, `check`, both builds and the new test suites, with
 Playwright screenshots at desktop and **380 px** width and **zero console errors**.
 
-### Phase 0 — Groundwork
+### Phase 0 — Groundwork *(done 2026-11-20 except Playwright, deferred until local sign-in exists)*
+
+Delivered: kit split into `reference/` (committed) and `data/private/` (gitignored, also
+excluded from Docker builds); vitest with `pnpm run test:unit` in CI; shared rules in
+`src/lib/leaco/`; `docs/leaco/open-questions.md`; and a first `/dashboard` page (headline
+KPIs, period averages, reconciliation notice) linked from the home page and the header.
+
+Original scope:
 - Unzip the kit into `reference/`; gitignore the zip and `data/private/`.
 - Add **vitest** and **Playwright** (the repo has no test suite today).
 - First tests: the known-good figures (344,557 / 26,684 / 52.4) and the reconciliation rules,
