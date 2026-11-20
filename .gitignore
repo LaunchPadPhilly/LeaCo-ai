@@ -33,3 +33,13 @@ deploy/
 # Terraform backend partial configs carry account-specific bucket names.
 *.backend.hcl
 !example.backend.hcl
+
+# LeaCo business data (daily reports, pumper notes, KMZ features, Amplified IDs).
+# Kept out of git by decision D5 in docs/leaco/PLAN.md.
+/data/private/
+/LeaCo_Dashboard_Starter_Kit*.zip
+
+# Local Playwright session cookie and screenshots (scripts/dev-session.ts).
+/.playwright/
+/test-results/
+/playwright-report/

@@ -27,3 +27,7 @@ playbook
 Dockerfile
 .dockerignore
 docker-compose*.yml
+
+# LeaCo business data never enters an image (docs/leaco/PLAN.md, D5).
+data/private
+*.zip
