@@ -41,6 +41,7 @@ export class AmplifiedError extends Error {
 
 const REQUEST_TIMEOUT_MS = 20_000;
 const TAGS_CACHE_TTL_MS = 10 * 60_000;
+const ASSETS_CACHE_TTL_MS = 10 * 60_000;
 const MAX_RETRY_AFTER_MS = 10_000;
 const DAY_MS = 86_400_000;
 
@@ -163,9 +164,14 @@ function parse<T>(schema: { safeParse(value: unknown): { success: true; data: T 
 
 // --- Endpoints --------------------------------------------------------------------
 
-/** GET /customer_api/assets — customer_asset_ids of every well, tank and lease. */
+let assetsCache: { at: number; value: AssetsResponse } | undefined;
+
+/** GET /customer_api/assets — customer_asset_ids of every well, tank and lease. Cached 10 min. */
 export async function getAssets(): Promise<AssetsResponse> {
-	return parse(assetsResponseSchema, await request('/customer_api/assets'));
+	if (assetsCache && Date.now() - assetsCache.at < ASSETS_CACHE_TTL_MS) return assetsCache.value;
+	const value = parse(assetsResponseSchema, await request('/customer_api/assets'));
+	assetsCache = { at: Date.now(), value };
+	return value;
 }
 
 let tagsCache: { at: number; value: TagsResponse } | undefined;
