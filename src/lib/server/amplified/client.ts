@@ -42,6 +42,8 @@ export class AmplifiedError extends Error {
 const REQUEST_TIMEOUT_MS = 20_000;
 const TAGS_CACHE_TTL_MS = 10 * 60_000;
 const ASSETS_CACHE_TTL_MS = 10 * 60_000;
+/** Encoded `payload` length per request; keeps the full URL well under the gateway's ~6,000. */
+const MAX_PAYLOAD_CHARS = 4_000;
 const MAX_RETRY_AFTER_MS = 10_000;
 const DAY_MS = 86_400_000;
 
@@ -138,7 +140,13 @@ async function toAmplifiedError(response: Response): Promise<AmplifiedError> {
 				401
 			);
 		case 403:
-			return new AmplifiedError('FORBIDDEN', 'Amplified refused this endpoint for an API key.', 403);
+			return new AmplifiedError(
+				'FORBIDDEN',
+				detail
+					? 'Amplified refused this endpoint for an API key.'
+					: 'Amplified\'s gateway refused the request (HTML 403), most likely because the request URL was too long.',
+				403
+			);
 		case 429:
 			return new AmplifiedError('RATE_LIMITED', 'Amplified rate limit reached (100 requests/minute); try again shortly.', 429);
 		default:
@@ -193,13 +201,35 @@ export async function getData(input: DataRequest): Promise<AssetResult[]> {
 	validateDataRequest(input);
 
 	const results: AssetResult[] = [];
-	for (let i = 0; i < input.assets.length; i += MAX_ASSETS_PER_REQUEST) {
-		const batch = { ...input, assets: input.assets.slice(i, i + MAX_ASSETS_PER_REQUEST) };
-		const payload = Buffer.from(JSON.stringify(stripUndefined(batch)), 'utf8').toString('base64');
+	for (const payload of batchPayloads(input)) {
 		const response = parse(dataResponseSchema, await request('/customer_api', { payload }));
 		results.push(...response.asset_data);
 	}
 	return results;
+}
+
+/**
+ * Splits a request into payloads that respect both upstream limits: at most 20 assets,
+ * and a URL short enough for Amplified's gateway, which answers an over-long URL
+ * (observed around 6,000 characters) with an HTML 403 instead of a JSON error.
+ */
+function batchPayloads(input: DataRequest): string[] {
+	const encode = (assets: DataRequest['assets']) =>
+		Buffer.from(JSON.stringify(stripUndefined({ ...input, assets })), 'utf8').toString('base64');
+	const payloads: string[] = [];
+	let batch: DataRequest['assets'] = [];
+	for (const asset of input.assets) {
+		const candidate = [...batch, asset];
+		const tooLong = encodeURIComponent(encode(candidate)).length > MAX_PAYLOAD_CHARS;
+		if (batch.length && (candidate.length > MAX_ASSETS_PER_REQUEST || tooLong)) {
+			payloads.push(encode(batch));
+			batch = [asset];
+		} else {
+			batch = candidate;
+		}
+	}
+	if (batch.length) payloads.push(encode(batch));
+	return payloads;
 }
 
 function validateDataRequest({ assets, start, end }: DataRequest) {
