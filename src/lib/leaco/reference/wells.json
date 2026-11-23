@@ -1,0 +1,1872 @@
+{
+ "source": "NM OCD state well records (locations approximate); Amplified links from the reviewed ID worksheet",
+ "wells": [
+  {
+   "key": "EEU-1",
+   "name": "East Eumont Unit 1",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.70496,
+   "lon": -103.25739,
+   "api": "30-025-05526",
+   "stateName": "EAST EUMONT UNIT #001F",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_1",
+    "amplifiedId": 6799,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-3",
+   "name": "East Eumont Unit 3",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.70495,
+   "lon": -103.25096,
+   "api": "30-025-05528",
+   "stateName": "EAST EUMONT UNIT #003",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_3",
+    "amplifiedId": 6500,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-5",
+   "name": "East Eumont Unit 5",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.70221,
+   "lon": -103.25417,
+   "api": "30-025-05532",
+   "stateName": "EAST EUMONT UNIT #005",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_5",
+    "amplifiedId": 6798,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-13",
+   "name": "East Eumont Unit 13",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.69495,
+   "lon": -103.25323,
+   "api": "30-025-05557",
+   "stateName": "EAST EUMONT UNIT #013",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_13",
+    "amplifiedId": 4724,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-15",
+   "name": "East Eumont Unit 15",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.69482,
+   "lon": -103.24572,
+   "api": "30-025-09877",
+   "stateName": "EAST EUMONT UNIT #015",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_15",
+    "amplifiedId": 4727,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-17",
+   "name": "East Eumont Unit 17",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.6921,
+   "lon": -103.2579,
+   "api": "30-025-05550",
+   "stateName": "EAST EUMONT UNIT #017",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_17",
+    "amplifiedId": 6800,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-19",
+   "name": "East Eumont Unit 19",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.69109,
+   "lon": -103.25002,
+   "api": "30-025-05546",
+   "stateName": "EAST EUMONT UNIT #019",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_19",
+    "amplifiedId": 3635,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-21",
+   "name": "East Eumont Unit 21",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.69107,
+   "lon": -103.24144,
+   "api": "30-025-09879",
+   "stateName": "EAST EUMONT UNIT #021",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_21",
+    "amplifiedId": 4757,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-23",
+   "name": "East Eumont Unit 23",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.68744,
+   "lon": -103.24574,
+   "api": "30-025-05543",
+   "stateName": "EAST EUMONT UNIT #023",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_23",
+    "amplifiedId": 6638,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-24",
+   "name": "East Eumont Unit 24",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.68382,
+   "lon": -103.25005,
+   "api": "30-025-05555",
+   "stateName": "EAST EUMONT UNIT #024",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_24",
+    "amplifiedId": 6508,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-26",
+   "name": "East Eumont Unit 26",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.68381,
+   "lon": -103.24146,
+   "api": "30-025-05545",
+   "stateName": "EAST EUMONT UNIT #026",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_26",
+    "amplifiedId": 4801,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-29",
+   "name": "East Eumont Unit 29",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.68018,
+   "lon": -103.24576,
+   "api": "30-025-05585",
+   "stateName": "EAST EUMONT UNIT #029",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_29",
+    "amplifiedId": 4921,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-31",
+   "name": "East Eumont Unit 31",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.67979,
+   "lon": -103.2375,
+   "api": "30-025-05587",
+   "stateName": "EAST EUMONT UNIT #031",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_31",
+    "amplifiedId": 4920,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-34",
+   "name": "East Eumont Unit 34",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.67292,
+   "lon": -103.24577,
+   "api": "30-025-05592",
+   "stateName": "EAST EUMONT UNIT #034",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_34",
+    "amplifiedId": 3642,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-40",
+   "name": "East Eumont Unit 40",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.66204,
+   "lon": -103.24898,
+   "api": "30-025-05606",
+   "stateName": "EAST EUMONT UNIT #040",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_40",
+    "amplifiedId": 6793,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-42",
+   "name": "East Eumont Unit 42",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.66204,
+   "lon": -103.24148,
+   "api": "30-025-05601",
+   "stateName": "EAST EUMONT UNIT #042",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_42",
+    "amplifiedId": 6794,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-201",
+   "name": "East Eumont Unit 201",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.6856,
+   "lon": -103.24775,
+   "api": "30-025-40937",
+   "stateName": "EAST EUMONT UNIT #201",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_201",
+    "amplifiedId": 6797,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-202",
+   "name": "East Eumont Unit 202",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.68201,
+   "lon": -103.24751,
+   "api": "30-025-40938",
+   "stateName": "EAST EUMONT UNIT #202",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_202",
+    "amplifiedId": 6796,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-203",
+   "name": "East Eumont Unit 203",
+   "kind": "well",
+   "area": "eeu",
+   "lat": 32.68558,
+   "lon": -103.24329,
+   "api": "30-025-40939",
+   "stateName": "EAST EUMONT UNIT #203",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_203",
+    "amplifiedId": 6795,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "EEU-9",
+   "name": "East Eumont Unit 9 Injector",
+   "kind": "injector",
+   "area": "eeu",
+   "lat": 32.69858,
+   "lon": -103.25308,
+   "api": "30-025-05530",
+   "stateName": "EAST EUMONT UNIT #009",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_9",
+    "amplifiedId": 5972,
+    "status": "probable",
+    "note": "Amplified names it a well; LeaCo list says injector"
+   }
+  },
+  {
+   "key": "EEU-11",
+   "name": "East Eumont Unit 11 Injector",
+   "kind": "injector",
+   "area": "eeu",
+   "lat": 32.69857,
+   "lon": -103.24557,
+   "api": "30-025-05538",
+   "stateName": "EAST EUMONT UNIT #011",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_11",
+    "amplifiedId": 5016,
+    "status": "probable",
+    "note": "Amplified names it a well; LeaCo list says injector"
+   }
+  },
+  {
+   "key": "EEU-14",
+   "name": "East Eumont Unit 14 Injector",
+   "kind": "injector",
+   "area": "eeu",
+   "lat": 32.69495,
+   "lon": -103.25001,
+   "api": "30-025-05556",
+   "stateName": "EAST EUMONT UNIT #014",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_14",
+    "amplifiedId": 4943,
+    "status": "probable",
+    "note": "Amplified names it a well; LeaCo list says injector"
+   }
+  },
+  {
+   "key": "EEU-18",
+   "name": "East Eumont Unit 18 Injector",
+   "kind": "injector",
+   "area": "eeu",
+   "lat": 32.69172,
+   "lon": -103.25323,
+   "api": "30-025-05547",
+   "stateName": "EAST EUMONT UNIT #018",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_18",
+    "amplifiedId": 4932,
+    "status": "probable",
+    "note": "Amplified names it a well; LeaCo list says injector"
+   }
+  },
+  {
+   "key": "EEU-20",
+   "name": "East Eumont Unit 20 Injector",
+   "kind": "injector",
+   "area": "eeu",
+   "lat": 32.69101,
+   "lon": -103.24573,
+   "api": "30-025-09878",
+   "stateName": "EAST EUMONT UNIT #020",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_20",
+    "amplifiedId": 4924,
+    "status": "probable",
+    "note": "Amplified names it a well; LeaCo list says injector"
+   }
+  },
+  {
+   "key": "EEU-25",
+   "name": "East Eumont Unit 25 Injector",
+   "kind": "injector",
+   "area": "eeu",
+   "lat": 32.68381,
+   "lon": -103.24575,
+   "api": "30-025-05544",
+   "stateName": "EAST EUMONT UNIT #025",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_25",
+    "amplifiedId": 3707,
+    "status": "probable",
+    "note": "Amplified names it a well; LeaCo list says injector"
+   }
+  },
+  {
+   "key": "EEU-28",
+   "name": "East Eumont Unit 28 Injector",
+   "kind": "injector",
+   "area": "eeu",
+   "lat": 32.68019,
+   "lon": -103.25005,
+   "api": "30-025-05583",
+   "stateName": "EAST EUMONT UNIT #028",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_28",
+    "amplifiedId": 5959,
+    "status": "probable",
+    "note": "Amplified names it a well; LeaCo list says injector"
+   }
+  },
+  {
+   "key": "EEU-35",
+   "name": "East Eumont Unit 35 Injector",
+   "kind": "injector",
+   "area": "eeu",
+   "lat": 32.67293,
+   "lon": -103.24147,
+   "api": "30-025-05591",
+   "stateName": "EAST EUMONT UNIT #035",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_35",
+    "amplifiedId": 5962,
+    "status": "probable",
+    "note": "Amplified names it a well; LeaCo list says injector"
+   }
+  },
+  {
+   "key": "EEU-36",
+   "name": "East Eumont Unit 36 Injector",
+   "kind": "injector",
+   "area": "eeu",
+   "lat": 32.6693,
+   "lon": -103.24577,
+   "api": "30-025-05590",
+   "stateName": "EAST EUMONT UNIT #036",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_36",
+    "amplifiedId": 5963,
+    "status": "probable",
+    "note": "Amplified names it a well; LeaCo list says injector"
+   }
+  },
+  {
+   "key": "EEU-41",
+   "name": "East Eumont Unit 41 Injector",
+   "kind": "injector",
+   "area": "eeu",
+   "lat": 32.66204,
+   "lon": -103.24577,
+   "api": "30-025-05600",
+   "stateName": "EAST EUMONT UNIT #041",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "East_Eumont_Unit_41",
+    "amplifiedId": 5967,
+    "status": "probable",
+    "note": "Amplified names it a well; LeaCo list says injector"
+   }
+  },
+  {
+   "key": "MEWAF-1",
+   "name": "Mary E Wills A Federal 1",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.00515,
+   "lon": -103.13589,
+   "api": "30-025-12107",
+   "stateName": "MARY E WILLS A FEDERAL #001",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Mary_E_Wills_A_Federal_1",
+    "amplifiedId": 6856,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MEWAF-2",
+   "name": "Mary E Wills A Federal 2",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.00515,
+   "lon": -103.14015,
+   "api": "30-025-12108",
+   "stateName": "MARY E WILLS A FEDERAL #002",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Mary_E_Wills_A_Federal_2",
+    "amplifiedId": 6455,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MEWAF-3",
+   "name": "Mary E Wills A Federal 3",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.00515,
+   "lon": -103.14441,
+   "api": "30-025-12106",
+   "stateName": "MARY E WILLS A FEDERAL #003",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Mary_E_Wills_A_Federal_3",
+    "amplifiedId": 6452,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MEWAF-4",
+   "name": "Mary E Wills A Federal 4",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.00185,
+   "lon": -103.14015,
+   "api": "30-025-12109",
+   "stateName": "MARY E WILLS A FEDERAL #004",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Mary_E_Wills_A_Federal_4",
+    "amplifiedId": 6859,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MEWAF-5",
+   "name": "Mary E Wills A Federal 5",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.00129,
+   "lon": -103.13589,
+   "api": "30-025-12110",
+   "stateName": "MARY E WILLS A FEDERAL #005",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Mary_E_Wills_A_Federal_5",
+    "amplifiedId": 6858,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MEWAF-17",
+   "name": "Mary E Wills A Federal 17",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.00397,
+   "lon": -103.14548,
+   "api": "30-025-33898",
+   "stateName": "MARY E WILLS A FEDERAL #017",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Mary_E_Wills_A_Federal_17",
+    "amplifiedId": 6242,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MEWAF-18",
+   "name": "Mary E Wills A Federal 18",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.00606,
+   "lon": -103.14547,
+   "api": "30-025-34218",
+   "stateName": "MARY E WILLS A FEDERAL #018",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Mary_E_Wills_A_Federal_18",
+    "amplifiedId": 6339,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MRWF-2",
+   "name": "Mr Wills Federal 2",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.00607,
+   "lon": -103.14973,
+   "api": "30-025-33151",
+   "stateName": "MR WILLS FEDERAL #002",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Well_Mr_Wills_Federal_2",
+    "amplifiedId": 6264,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MRWF-3",
+   "name": "Mr Wills Federal 3",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.00607,
+   "lon": -103.15186,
+   "api": "30-025-33303",
+   "stateName": "MR WILLS FEDERAL #003",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Mr_Wills_Federal_3",
+    "amplifiedId": 6293,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MRWF-4",
+   "name": "Mr Wills Federal 4",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.00243,
+   "lon": -103.14761,
+   "api": "30-025-33613",
+   "stateName": "MR WILLS FEDERAL #004",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Mr_Wills_Federal_4",
+    "amplifiedId": 6340,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WF-8",
+   "name": "Wills Federal 8",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.00607,
+   "lon": -103.16037,
+   "api": "30-025-28301",
+   "stateName": "WILLS FEDERAL #008",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Wills_Federal_8",
+    "amplifiedId": 6855,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-29",
+   "name": "Myers Langlie Mattix Unit 29",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.2738,
+   "lon": -103.19952,
+   "api": "30-025-27379",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #029",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_29",
+    "amplifiedId": 6812,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-38",
+   "name": "Myers Langlie Mattix Unit 38",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.2699,
+   "lon": -103.21242,
+   "api": "30-025-09417",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #038",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_38",
+    "amplifiedId": 5890,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-74",
+   "name": "Myers Langlie Mattix Unit 74",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.26291,
+   "lon": -103.19524,
+   "api": "30-025-25677",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #074",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_74",
+    "amplifiedId": 5900,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-82",
+   "name": "Myers Langlie Mattix Unit 82",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.26263,
+   "lon": -103.16144,
+   "api": "30-025-27382",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #082",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_82",
+    "amplifiedId": 5916,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-98",
+   "name": "Myers Langlie Mattix Unit 98",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.25899,
+   "lon": -103.20815,
+   "api": "30-025-10906",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #098",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_98",
+    "amplifiedId": 6804,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-100",
+   "name": "Myers Langlie Mattix Unit 100",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.259,
+   "lon": -103.2167,
+   "api": "30-025-09485",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #100",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_100",
+    "amplifiedId": 6813,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-116",
+   "name": "Myers Langlie Mattix Unit 116",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.25536,
+   "lon": -103.16144,
+   "api": "30-025-10928",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #116",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_116",
+    "amplifiedId": 5911,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-139",
+   "name": "Myers Langlie Mattix Unit 139",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.24811,
+   "lon": -103.20389,
+   "api": "30-025-11020",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #139",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_139",
+    "amplifiedId": 6815,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-158",
+   "name": "Myers Langlie Mattix Unit 158",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.24455,
+   "lon": -103.14011,
+   "api": "30-025-10981",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #158",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_158",
+    "amplifiedId": 6568,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-162",
+   "name": "Myers Langlie Mattix Unit 162",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.24454,
+   "lon": -103.15751,
+   "api": "30-025-27386",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #162",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_162",
+    "amplifiedId": 6817,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-174",
+   "name": "Myers Langlie Mattix Unit 174",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.24088,
+   "lon": -103.20409,
+   "api": "30-025-11021",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #174",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_174",
+    "amplifiedId": 6809,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-191",
+   "name": "Myers Langlie Mattix Unit 191",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.23729,
+   "lon": -103.14867,
+   "api": "30-025-11091",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #191",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_191",
+    "amplifiedId": 6811,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-197",
+   "name": "Myers Langlie Mattix Unit 197",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.23663,
+   "lon": -103.17422,
+   "api": "30-025-26411",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #197",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_197",
+    "amplifiedId": 6810,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-201",
+   "name": "Myers Langlie Mattix Unit 201",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.23728,
+   "lon": -103.19096,
+   "api": "30-025-11064",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #201",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_201",
+    "amplifiedId": 5819,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-213",
+   "name": "Myers Langlie Mattix Unit 213",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.23364,
+   "lon": -103.19556,
+   "api": "30-025-11045",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #213",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_213",
+    "amplifiedId": 5857,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-240",
+   "name": "Myers Langlie Mattix Unit 240",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.23001,
+   "lon": -103.21669,
+   "api": "30-025-09555",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #240",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_240",
+    "amplifiedId": 6814,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-247",
+   "name": "Myers Langlie Mattix Unit 247",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.22609,
+   "lon": -103.19556,
+   "api": "30-025-11044",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #247",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_247",
+    "amplifiedId": 5807,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-261",
+   "name": "Myers Langlie Mattix Unit 261",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.25723,
+   "lon": -103.20609,
+   "api": "30-025-32559",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #261",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_261",
+    "amplifiedId": 6572,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-265",
+   "name": "Myers Langlie Mattix Unit 265",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.25756,
+   "lon": -103.1891,
+   "api": "30-025-32536",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #265",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_265",
+    "amplifiedId": 6803,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-266",
+   "name": "Myers Langlie Mattix Unit 266",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.25327,
+   "lon": -103.20203,
+   "api": "30-025-32537",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #266",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_266",
+    "amplifiedId": 6805,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-268",
+   "name": "Myers Langlie Mattix Unit 268",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.25317,
+   "lon": -103.19464,
+   "api": "30-025-32592",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #268",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_268",
+    "amplifiedId": 6807,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-271",
+   "name": "Myers Langlie Mattix Unit 271",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.24987,
+   "lon": -103.1901,
+   "api": "30-025-32565",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #271",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_271",
+    "amplifiedId": 6808,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-273",
+   "name": "Myers Langlie Mattix Unit 273",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.24659,
+   "lon": -103.18906,
+   "api": "30-025-32594",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #273",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_273",
+    "amplifiedId": 7521,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-275",
+   "name": "Myers Langlie Mattix Unit 275",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.24278,
+   "lon": -103.18909,
+   "api": "30-025-32557",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #275",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_275",
+    "amplifiedId": 6819,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-182",
+   "name": "Myers Langlie Mattix Unit 182",
+   "kind": "well",
+   "area": "mlmu",
+   "lat": 32.24091,
+   "lon": -103.16996,
+   "api": "30-025-27482",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #182",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Well_Myers_Langlie_Mattix_Unit_182",
+    "amplifiedId": 6818,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-71",
+   "name": "Myers Langlie Mattix Unit 71 Injector",
+   "kind": "injector",
+   "area": "mlmu",
+   "lat": 32.26263,
+   "lon": -103.20815,
+   "api": "30-025-10901",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #071",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_71_Injector",
+    "amplifiedId": 5895,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-99",
+   "name": "Myers Langlie Mattix Unit 99 Injector",
+   "kind": "injector",
+   "area": "mlmu",
+   "lat": 32.259,
+   "lon": -103.21243,
+   "api": "30-025-09482",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #099",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_99_Injector",
+    "amplifiedId": 5945,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-103",
+   "name": "Myers Langlie Mattix Unit 103 Injector",
+   "kind": "injector",
+   "area": "mlmu",
+   "lat": 32.25537,
+   "lon": -103.2167,
+   "api": "30-025-09486",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #103",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_103_Injector",
+    "amplifiedId": 5958,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-105",
+   "name": "Myers Langlie Mattix Unit 105 Injector",
+   "kind": "injector",
+   "area": "mlmu",
+   "lat": 32.25536,
+   "lon": -103.20816,
+   "api": "30-025-10908",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #105",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_105",
+    "amplifiedId": 6686,
+    "status": "probable",
+    "note": "Amplified names it a well; LeaCo list says injector"
+   }
+  },
+  {
+   "key": "MLMU-141",
+   "name": "Myers Langlie Mattix Unit 141 Injector",
+   "kind": "injector",
+   "area": "mlmu",
+   "lat": 32.24816,
+   "lon": -103.19556,
+   "api": "30-025-11027",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #141",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_141_Injector",
+    "amplifiedId": 5835,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-170",
+   "name": "Myers Langlie Mattix Unit 170 Injector",
+   "kind": "injector",
+   "area": "mlmu",
+   "lat": 32.24453,
+   "lon": -103.19236,
+   "api": "30-025-11004",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #170",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_170_Injector",
+    "amplifiedId": 5826,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-204",
+   "name": "Myers Langlie Mattix Unit 204 Injector",
+   "kind": "injector",
+   "area": "mlmu",
+   "lat": 32.23726,
+   "lon": -103.20389,
+   "api": "30-025-26971",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #204",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": null
+  },
+  {
+   "key": "MLMU-212",
+   "name": "Myers Langlie Mattix Unit 212 Injector",
+   "kind": "injector",
+   "area": "mlmu",
+   "lat": 32.23364,
+   "lon": -103.19918,
+   "api": "30-025-27089",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #212",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_212_Injector",
+    "amplifiedId": 5850,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-239",
+   "name": "Myers Langlie Mattix Unit 239 Injector",
+   "kind": "injector",
+   "area": "mlmu",
+   "lat": 32.23,
+   "lon": -103.21243,
+   "api": "30-025-09554",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #239",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_239_Injector",
+    "amplifiedId": 5981,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-241",
+   "name": "Myers Langlie Mattix Unit 241 Injector",
+   "kind": "injector",
+   "area": "mlmu",
+   "lat": 32.23002,
+   "lon": -103.22097,
+   "api": "30-025-09551",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #241",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_241_Injector",
+    "amplifiedId": 6002,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "MLMU-244",
+   "name": "Myers Langlie Mattix Unit 244 Injector",
+   "kind": "injector",
+   "area": "mlmu",
+   "lat": 32.22637,
+   "lon": -103.20815,
+   "api": "30-025-11048",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #244",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_244",
+    "amplifiedId": 5970,
+    "status": "probable",
+    "note": "Amplified names it a well; LeaCo list says injector"
+   }
+  },
+  {
+   "key": "MLMU-246",
+   "name": "Myers Langlie Mattix Unit 246 Injector",
+   "kind": "injector",
+   "area": "mlmu",
+   "lat": 32.22638,
+   "lon": -103.19983,
+   "api": "30-025-11049",
+   "stateName": "MYERS LANGLIE MATTIX UNIT #246",
+   "operator": "J R OIL, LTD. CO.",
+   "landType": "Private",
+   "amplified": {
+    "customerAssetId": "Myers_Langlie_Mattix_Unit_246_Injector",
+    "amplifiedId": 5861,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "RNCF1-1",
+   "name": "Rhodes NCT Coop Fed Com 1 1",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.01129,
+   "lon": -103.14993,
+   "api": "30-025-32095",
+   "stateName": "RHODES NCT COOP FEDERAL COM 1 #001",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Rhodes_NCT_COOP_Fed._Com_1_1",
+    "amplifiedId": 6484,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "RNCF1-2",
+   "name": "Rhodes NCT Coop Fed Com 1 2",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.01513,
+   "lon": -103.14973,
+   "api": "30-025-32096",
+   "stateName": "RHODES NCT COOP FEDERAL COM 1 #002",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Rhodes_NCT_COOP_Fed._Com_1_2",
+    "amplifiedId": 6344,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "RYCF2-1",
+   "name": "Rhodes Yates Coop Fed Com 2 1",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.01447,
+   "lon": -103.15916,
+   "api": "30-025-32357",
+   "stateName": "RHODES YATES COOP FED COM 2 #001",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "Rhodes_Yates_COOP_Fed_Com_2_1",
+    "amplifiedId": 6848,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "RYCF3-1",
+   "name": "Rhodes Yates Coop Fed Com 3 1",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.01072,
+   "lon": -103.15914,
+   "api": "30-025-32094",
+   "stateName": "RHODES YATES COOP FED COM 3 #001",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Rhodes_Yates_COOP_Fed_Com_3_1",
+    "amplifiedId": 6854,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "RYU-16",
+   "name": "Rhodes Yates Unit 16",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.01792,
+   "lon": -103.15491,
+   "api": "30-025-31732",
+   "stateName": "RHODES YATES UNIT #016",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "Rhodes_Yates_Unit_16",
+    "amplifiedId": 6486,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "RYU-17",
+   "name": "Rhodes Yates Unit 17",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.0179,
+   "lon": -103.15915,
+   "api": "30-025-32022",
+   "stateName": "RHODES YATES UNIT #017",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "Rhodes_Yates_Unit_17",
+    "amplifiedId": 6380,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WHRB-29",
+   "name": "WH Rhodes B Federal NCT-1 29",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.01453,
+   "lon": -103.14629,
+   "api": "30-025-32109",
+   "stateName": "W H RHODES B FEDERAL NCT-1 #029",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "W_H_Rhodes_23_B_Federal_NCT-1_29",
+    "amplifiedId": 6850,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WHRB-20",
+   "name": "W H Rhodes B Federal NCT-1 20",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.01087,
+   "lon": -103.1423,
+   "api": "30-025-31764",
+   "stateName": "W H RHODES B FEDERAL NCT-1 #020",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "W_H_Rhodes_B_Federal_NCT-1_24",
+    "amplifiedId": 6851,
+    "status": "conflict",
+    "note": "ID says #24 but name says #20; LeaCo list has no ID for WHRB #20"
+   }
+  },
+  {
+   "key": "WHRB-25",
+   "name": "WH Rhodes B Federal NCT-1 25",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.0183,
+   "lon": -103.146,
+   "api": "30-025-32099",
+   "stateName": "W H RHODES B FEDERAL NCT-1 #025",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "W_H_Rhodes_B_Federal_NCT-1_25",
+    "amplifiedId": 6849,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WHRB-21",
+   "name": "WH Rhodes B Federal NCT-1 21",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.01121,
+   "lon": -103.1458,
+   "api": "30-025-31765",
+   "stateName": "W H RHODES B FEDERAL NCT-1 #021",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "W_H_Rhodes_B_Federal_NCT-1_#21",
+    "amplifiedId": 6852,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "RNCF1-3",
+   "name": "Rhodes NCT Coop Fed Com 1 3",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.01831,
+   "lon": -103.14993,
+   "api": "30-025-32126",
+   "stateName": "RHODES NCT COOP FEDERAL COM 1 #003",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Well_Rhodes_NCT_COOP_Fed._Com_1_3",
+    "amplifiedId": 6346,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "RYCF4-1",
+   "name": "Rhodes Yates Coop Fed Com 4 1",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.02541,
+   "lon": -103.15932,
+   "api": "30-025-32460",
+   "stateName": "RHODES YATES COOP FED COM 4 #001",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Well_Rhodes_Yates_Coop_Fed_Com_4_#1",
+    "amplifiedId": 6230,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "RYCF5-1",
+   "name": "Rhodes Yates Coop Fed Com 5 1",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.02113,
+   "lon": -103.15926,
+   "api": "30-025-32378",
+   "stateName": "RHODES YATES COOP FED COM 5 #001",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "Well_Rhodes_Yates_Coop_Fed_Com_5_1",
+    "amplifiedId": 6244,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "RYU-15",
+   "name": "Rhodes Yates Unit 15",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.01114,
+   "lon": -103.15462,
+   "api": "30-025-31757",
+   "stateName": "RHODES YATES UNIT #015",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Well_Rhodes_Yates_Unit_15",
+    "amplifiedId": 6361,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WHRA-7",
+   "name": "WH Rhodes A Federal 7",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.02514,
+   "lon": -103.15542,
+   "api": "30-025-32102",
+   "stateName": "W H RHODES A FEDERAL #007",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Well_WH_Rhodes_A_Federal_7",
+    "amplifiedId": 6239,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WHRB-28",
+   "name": "WH Rhodes B Federal NCT-1 28",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.01408,
+   "lon": -103.1377,
+   "api": "30-025-32100",
+   "stateName": "W H RHODES B FEDERAL NCT-1 #028",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Well_WH_Rhodes_B_Fed_NCT_1_28",
+    "amplifiedId": 6373,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WHRB-31",
+   "name": "WH Rhodes B Federal NCT-1 31",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.01016,
+   "lon": -103.1337,
+   "api": "30-025-32127",
+   "stateName": "W H RHODES B FEDERAL NCT-1 #031",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Well_WH_Rhodes_B_Fed_NCT_1_31",
+    "amplifiedId": 6371,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WHRB-24",
+   "name": "WH Rhodes B Federal NCT-1 24",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.0177,
+   "lon": -103.14258,
+   "api": "30-025-32098",
+   "stateName": "W H RHODES B FEDERAL NCT-1 #024",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "WH_Rhodes_B_Federal_NCT-1_24",
+    "amplifiedId": 6362,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "RYU-6",
+   "name": "Rhodes Yates Unit 6 Injector",
+   "kind": "injector",
+   "area": "rw",
+   "lat": 32.01967,
+   "lon": -103.15291,
+   "api": "30-025-12065",
+   "stateName": "RHODES YATES UNIT #006",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "Rhodes_Yates_Unit_6_Injector",
+    "amplifiedId": 6439,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "RYU-7",
+   "name": "Rhodes Yates Unit 7 Injector",
+   "kind": "injector",
+   "area": "rw",
+   "lat": 32.01694,
+   "lon": -103.15185,
+   "api": "30-025-12063",
+   "stateName": "RHODES YATES UNIT #007",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "Rhodes_Yates_Unit_7_Injector",
+    "amplifiedId": 6443,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "RYU-8",
+   "name": "Rhodes Yates Unit 8 Injector",
+   "kind": "injector",
+   "area": "rw",
+   "lat": 32.01633,
+   "lon": -103.15683,
+   "api": "30-025-12064",
+   "stateName": "RHODES YATES UNIT #008",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "State",
+   "amplified": {
+    "customerAssetId": "Rhodes_Yates_Unit_8_Injector",
+    "amplifiedId": 6438,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WHRA-5",
+   "name": "WH Rhodes A Federal 5 Injector",
+   "kind": "injector",
+   "area": "rw",
+   "lat": 32.02301,
+   "lon": -103.14899,
+   "api": "30-025-12037",
+   "stateName": "W H RHODES A FEDERAL #005",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Well_WH_Rhodes_A_Federal_5_Injector",
+    "amplifiedId": 6435,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WHRB-1",
+   "name": "WH Rhodes B Federal NCT-1 1 Injector",
+   "kind": "injector",
+   "area": "rw",
+   "lat": 32.01694,
+   "lon": -103.14759,
+   "api": "30-025-12067",
+   "stateName": "W H RHODES B FEDERAL NCT-1 #001",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "WH_Rhodes_B_Federal_NCT-1_1_Injector",
+    "amplifiedId": 6370,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WHRB-4",
+   "name": "WH Rhodes B Federal NCT-1 4 Injector",
+   "kind": "injector",
+   "area": "rw",
+   "lat": 32.01604,
+   "lon": -103.1444,
+   "api": "30-025-12060",
+   "stateName": "W H RHODES B FEDERAL NCT-1 #004",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "WH_Rhodes_B_Federal_NCT-1_4_Injector",
+    "amplifiedId": 6369,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WHRB-5",
+   "name": "WH Rhodes B Federal NCT-1 5 Injector",
+   "kind": "injector",
+   "area": "rw",
+   "lat": 32.01966,
+   "lon": -103.14866,
+   "api": "30-025-12068",
+   "stateName": "W H RHODES B FEDERAL NCT-1 #005",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "WH_Rhodes_B_Federal_NCT-1_5_Injector",
+    "amplifiedId": 6447,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WF-14",
+   "name": "Wills Federal 14",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.00605,
+   "lon": -103.13267,
+   "api": "30-025-33561",
+   "stateName": "WILLS FEDERAL #014",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Wills_Federal_14",
+    "amplifiedId": 6376,
+    "status": "confirmed",
+    "note": null
+   }
+  },
+  {
+   "key": "WF-15",
+   "name": "Wills Federal 15",
+   "kind": "well",
+   "area": "rw",
+   "lat": 32.00424,
+   "lon": -103.13161,
+   "api": "30-025-33562",
+   "stateName": "WILLS FEDERAL #015",
+   "operator": "LeaCo Operating, LLC",
+   "landType": "Federal",
+   "amplified": {
+    "customerAssetId": "Wills_Federal_15",
+    "amplifiedId": 6379,
+    "status": "confirmed",
+    "note": null
+   }
+  }
+ ]
+}

@@ -9,7 +9,8 @@ export type AreaKey = 'mlmu' | 'eeu' | 'rw';
 export type PropertyKey = AreaKey | 'winkler' | 'crawford';
 export type LonLat = [number, number];
 
-export type WellStatus = 'run' | 'down' | 'nodata' | 'unk';
+/** `idle` (not pumping right now) only comes from Amplified's live status. */
+export type WellStatus = 'run' | 'down' | 'idle' | 'nodata' | 'unk';
 export type InjectorStatus = 'take' | 'stuck' | 'idle' | 'nodata';
 
 /** How an injector's volume appears in a day's report. */
@@ -42,8 +43,9 @@ export type OpsAsset = {
 	name: string;
 	kind: 'well' | 'injector';
 	area: AreaKey;
-	lon: number;
-	lat: number;
+	/** Null when no public state record gives a location: the asset is listed, but not on the map. */
+	lon: number | null;
+	lat: number | null;
 	api: string | null;
 	stateName: string | null;
 	operator: string | null;
@@ -60,18 +62,24 @@ export type OpsAsset = {
 	runtime7: string | null;
 	runtime13: string | null;
 	controlMode: string | null;
+	/** Daily-report history. Empty in Amplified mode, where status comes from `liveStatus`. */
 	days: AssetDay[];
+	/** Amplified's current run status, used when there is no report history. */
+	liveStatus?: 'Running' | 'Shutdown' | 'Idle' | null;
 };
 
 export type DayTotal = {
+	/** Water injected (daily reports). Amplified has no injection data. */
 	water: number | null;
 	oil: number | null;
+	/** LeaCo's own produced water (Amplified lease ledger). */
+	producedWater?: number | null;
 	/** Report header counts, authoritative for the KPIs (PLAN D4). */
 	injectorsTaking: [number, number] | null;
 	wellsRunning: [number, number] | null;
 };
 
-export type AreaDay = { water: number | null; oil: number | null; oil30: number | null };
+export type AreaDay = { water: number | null; oil: number | null; oil30: number | null; producedWater?: number | null };
 
 export type Ring = LonLat[];
 export type Polygon = Ring[];
@@ -83,6 +91,11 @@ export type Route = { from: string; to: string; miles: number; via: [string, num
 export type RoadGap = { area: string; miles: number; line: LonLat[] };
 
 export type OpsData = {
+	/**
+	 * `reports`: built from the private daily-report files (local). `amplified`: built from the live
+	 * Amplified API plus public state records; anything neither provides is null ("No data").
+	 */
+	mode: 'reports' | 'amplified';
 	dates: string[];
 	totals: DayTotal[];
 	areas: Record<AreaKey, AreaDay[]>;

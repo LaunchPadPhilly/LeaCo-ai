@@ -105,21 +105,21 @@
 						{ count: count(null), color: WELL_STATUS.nodata.color, name: 'no reading' }
 					]}
 				/>
-				<span class="sub">{count('Idle')} idle · <b class:bad={count('Shutdown') > 0}>{count('Shutdown')} shut down</b> · {count(null)} no reading · of {wells.length} linked</span>
+				<span class="sub">{count('Idle')} idle · <b class:bad={count('Shutdown') > 0}>{count('Shutdown')} shut down</b> · {count(null)} no reading · of {wells.length} in Amplified</span>
 				{#if offline.length}<span class="sub bad">{offline.length} of these haven’t checked in for over a day, so their status may be out of date.</span>{/if}
-				<span class="note">Idle can be normal for wells on timers. {Object.keys(snap.notLinked).length} wells aren’t linked to Amplified yet.</span>
+				<span class="note">Idle can be normal for wells on timers. {#if Object.keys(snap.notLinked).length}{Object.keys(snap.notLinked).length} state-record well{Object.keys(snap.notLinked).length > 1 ? 's aren’t' : ' isn’t'} matched in Amplified.{/if}</span>
 			</div>
 
 			{#if ledger}
 				<div class="tile">
 					<span class="label">Oil produced{ledger.day ? `, ${shortDay(ledger.day)}` : ''}</span>
-					<span class="value">{fmt(ledger.oil.sum, 1)}{#if ledger.oil.sum !== null}<small> bbl</small>{/if}</span>
+					<span class="value">{fmt(ledger.oil.sum, 1)}{#if ledger.oil.sum !== null}<small>{' bbl'}</small>{/if}</span>
 					{#if ledger.oilChange !== null && ledger.prev}<span class="sub" class:up={ledger.oilChange > 0} class:down={ledger.oilChange < 0}>{changeWords(ledger.oilChange, 1)} from {shortDay(ledger.prev)}</span>{/if}
 					<span class="note">Amplified lease ledger, UTC day · {ledger.oil.reporting} of {ledger.leases} leases reported</span>
 				</div>
 				<div class="tile">
 					<span class="label">Produced water{ledger.day ? `, ${shortDay(ledger.day)}` : ''}</span>
-					<span class="value">{fmt(ledger.water.sum)}{#if ledger.water.sum !== null}<small> bbl</small>{/if}</span>
+					<span class="value">{fmt(ledger.water.sum)}{#if ledger.water.sum !== null}<small>{' bbl'}</small>{/if}</span>
 					{#if ledger.waterChange !== null && ledger.prev}<span class="sub">{changeWords(ledger.waterChange)} from {shortDay(ledger.prev)}</span>{/if}
 					<span class="note">LeaCo’s own produced water, not water injected (Amplified doesn’t report injection)</span>
 				</div>
@@ -135,7 +135,7 @@
 						{/each}
 					</ul>
 				{:else}
-					<span class="note">No open tickets on linked wells.</span>
+					<span class="note">No open tickets in Amplified.</span>
 				{/if}
 			</div>
 		</div>
@@ -260,7 +260,6 @@
 	}
 
 	.value small {
-		margin-left: 0.25em;
 		font-size: 13px;
 		font-weight: 600;
 		color: var(--ops-muted);

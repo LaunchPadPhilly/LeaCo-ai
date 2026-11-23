@@ -135,7 +135,8 @@
 			stateLine: data.stateLine.map((l) => lineD(P, l)),
 			winkler: polygonsD(P, data.winklerBoundary),
 			crawford: polygonsD(P, data.crawford),
-			assets: data.assets.map((a) => ({ a, p: P([a.lon, a.lat]) })),
+			// Wells known only to Amplified have no location: they are listed on the page, not drawn here.
+			assets: data.assets.flatMap((a) => (a.lon === null || a.lat === null ? [] : [{ a, p: P([a.lon, a.lat]) }])),
 			dp: P(DELIVERY_POINT),
 			routes: data.routes.map((r) => {
 				const first = r.lines[0] ?? [];
@@ -202,7 +203,7 @@
 	}
 	export function focusAsset(key: string) {
 		const a = data.assets.find((x) => x.key === key);
-		if (a)
+		if (a && a.lon !== null && a.lat !== null)
 			fitBounds([
 				[a.lon - 0.014, a.lat - 0.009],
 				[a.lon + 0.014, a.lat + 0.009]
