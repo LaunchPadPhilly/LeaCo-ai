@@ -17,11 +17,23 @@ export type LiveTicket = {
 	assetName: string | null;
 };
 
+/**
+ * How an Amplified well is tied to a public state record: confirmed in the ID worksheet,
+ * probable (same lease and number, Amplified labels the kind differently), or none.
+ */
+export type LiveLink = 'confirmed' | 'probable' | null;
+
 export type LiveWell = {
-	/** Our asset key, e.g. EEU-21. */
+	/** Our asset key (e.g. EEU-21) when linked to a state record, else `AMP-<customer_asset_id>`. */
 	key: string;
 	customerAssetId: string;
 	amplifiedId: number | null;
+	/** Amplified's own name and lease for the asset. */
+	name: string;
+	leaseName: string | null;
+	link: LiveLink;
+	/** Why the link is only probable, when it is. */
+	linkNote: string | null;
 	status: LiveRunStatus | null;
 	/** Runtime % for the previous calendar day, Central time (Amplified definition). */
 	runtimeYesterday: number | null;
@@ -32,6 +44,7 @@ export type LiveWell = {
 	tickets: LiveTicket[];
 };
 
+/** `water` is the lease's produced water, not water injected (Amplified has no injection data). */
 export type LiveLeaseDay = { day: string; oil: number | null; water: number | null };
 
 export type LiveLease = {
@@ -46,7 +59,7 @@ export type LiveSnapshot = {
 	syncedAt: string;
 	wells: Record<string, LiveWell>;
 	leases: LiveLease[];
-	/** Our assets with no confirmed Amplified link yet, and why. */
+	/** State-record wells with no usable Amplified link, and why. */
 	notLinked: Record<string, string>;
 	/** Requests that failed for part of the data; the rest is still shown. */
 	warnings: string[];
@@ -56,6 +69,14 @@ export type LiveState =
 	| { status: 'ok'; snapshot: LiveSnapshot }
 	| { status: 'none'; reason: string }
 	| { status: 'error'; reason: string; snapshot: LiveSnapshot | null };
+
+/** What the signed-in home page loads for the dashboard. */
+export type DashboardLoad = {
+	state: 'ok' | 'missing' | 'invalid';
+	ops: import('./types').OpsData | null;
+	reason: string | null;
+	live: LiveState;
+};
 
 export const LIVE_STALE_MS = 15 * 60_000;
 

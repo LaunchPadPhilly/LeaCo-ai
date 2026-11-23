@@ -7,24 +7,27 @@ import type { OpsAsset } from './types';
  */
 const coord = (n: number) => n.toFixed(5);
 
-export function coordinates(a: Pick<OpsAsset, 'lat' | 'lon'>): string {
+/** An asset that has a location. Wells known only to Amplified have none: callers check first. */
+export type Located = { lat: number; lon: number };
+
+export function coordinates(a: Located): string {
 	return `${coord(a.lat)}, ${coord(a.lon)}`;
 }
 
 /** Google Maps directions to the point (Google "Maps URLs"; works in any browser or the app). */
-export function googleDirectionsUrl(a: Pick<OpsAsset, 'lat' | 'lon'>): string {
+export function googleDirectionsUrl(a: Located): string {
 	return `https://www.google.com/maps/dir/?api=1&destination=${coord(a.lat)},${coord(a.lon)}`;
 }
 
 /** Apple Maps directions to the point, with the name as the label. */
-export function appleDirectionsUrl(a: Pick<OpsAsset, 'lat' | 'lon' | 'name'>): string {
+export function appleDirectionsUrl(a: Located & Pick<OpsAsset, 'name'>): string {
 	return `https://maps.apple.com/?daddr=${coord(a.lat)},${coord(a.lon)}&q=${encodeURIComponent(a.name)}`;
 }
 
 export const LOCATION_CAVEAT = 'Location is approximate (NM OCD state records), not yet verified on site.';
 
 /** Plain text for a text message or work order. */
-export function shareText(a: Pick<OpsAsset, 'lat' | 'lon' | 'name' | 'api' | 'kind'>): string {
+export function shareText(a: Located & Pick<OpsAsset, 'name' | 'api' | 'kind'>): string {
 	return [
 		`${a.name} (${a.kind === 'injector' ? 'injector' : 'producing well'})`,
 		a.api ? `API ${a.api}` : null,

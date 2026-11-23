@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { onMount, untrack } from 'svelte';
 	import { LIVE_STALE_MS, type LiveSnapshot, type LiveState } from '$lib/leaco/ops/live';
+	import { opsFromAmplified, referenceNotInAmplified } from '$lib/leaco/ops/fromAmplified';
 	import LivePanel from './LivePanel.svelte';
 	import type { FeatureInfo } from '$lib/leaco/ops/feature';
 	import { fmt } from '$lib/leaco/ops/format';
-	import { longDay, periodLabel, presetPeriod, shortDay, type Period } from '$lib/leaco/ops/period';
+	import { clampPeriod, longDay, periodLabel, presetPeriod, shortDay, type Period } from '$lib/leaco/ops/period';
 	import { AREA_KEYS, PROPERTIES, PROPERTY_KEYS } from '$lib/leaco/ops/properties';
 	import { areaSummary, attention, headline } from '$lib/leaco/ops/summary';
 	import type { AreaKey, OpsData, PropertyKey } from '$lib/leaco/ops/types';
@@ -17,7 +18,8 @@
 	import FeatureDetail from './map/FeatureDetail.svelte';
 	import OpsMap from './map/OpsMap.svelte';
 
-	let { ops, live: initialLive }: { ops: OpsData; live: LiveState } = $props();
+	let { ops: serverOps, live: initialLive }: { ops: OpsData; live: LiveState } = $props();
+	const amplifiedMode = $derived(serverOps.mode === 'amplified');
 
 	// ---------- live Amplified data: shown at once from the saved copy, refreshed in the background
 	let live = $state<LiveState>(untrack(() => initialLive));
@@ -54,8 +56,21 @@
 		};
 	});
 
+	// In Amplified mode the whole view is rebuilt from each live refresh, so every number stays
+	// current; in report mode it's the server's report data and the live panel sits on top.
+	const ops = $derived<OpsData>(serverOps.mode === 'amplified' && liveSnap ? opsFromAmplified(liveSnap) : serverOps);
+	const notOnMap = $derived(ops.assets.filter((a) => a.lat === null || a.lon === null));
+	const notInAmplified = $derived(amplifiedMode && liveSnap ? referenceNotInAmplified(liveSnap) : []);
+
 	// Starts on the latest day once per page load; the user changes it from there.
-	let period = $state<Period>(presetPeriod('day', untrack(() => ops.dates.length)));
+	let period = $state<Period>(presetPeriod('day', untrack(() => serverOps.dates.length)));
+	// A refresh can add a new ledger day: keep the period inside the dates.
+	$effect(() => {
+		const n = ops.dates.length;
+		untrack(() => {
+			period = period.e >= n ? presetPeriod('day', n) : clampPeriod(period, n);
+		});
+	});
 	let selectedProperty = $state<PropertyKey | null>(null);
 	let selectedAsset = $state<string | null>(null);
 	/** A clicked road, route or gap. Only one detail drawer is open at a time. */
@@ -102,11 +117,10 @@
 <div class="ops dash">
 	<header class="top">
 		<div class="brand">
-			<a href="/" class="back">← App</a>
 			<p class="ops-eyebrow">LeaCo Operations</p>
 			<h1>Field sheet</h1>
 			<p class="asof">
-				Latest report <b>{longDay(dates[dates.length - 1])}</b> · showing <b>{pText}</b> ({period.e - period.s + 1} report{period.e > period.s ? 's' : ''})
+				{amplifiedMode ? 'Latest Amplified production day' : 'Latest report'} <b>{longDay(dates[dates.length - 1])}</b> · showing <b>{pText}</b> ({period.e - period.s + 1} day{period.e > period.s ? 's' : ''})
 			</p>
 		</div>
 		<div class="picker"><PeriodPicker {dates} bind:period /></div>
@@ -115,6 +129,37 @@
 	<main class="body">
 		<LivePanel {live} {refreshing} {now} nameOf={(key) => ops.assets.find((a) => a.key === key)?.name ?? key} onrefresh={refreshLive} onpick={(key) => pickAsset(key, true)} />
 
+		{#if amplifiedMode}
+			<section class="source" aria-labelledby="source-title">
+				<h2 id="source-title" class="ops-eyebrow">Where this data comes from</h2>
+				<p>
+					Everything on this page comes from the <b>Amplified API</b>, refreshed every 15 minutes. Well locations, API
+					numbers and operators come from <b>NM OCD state records</b> where a well is linked to one.
+				</p>
+				<p>
+					<b>Missing here</b>, because Amplified doesn’t provide it: water injected and injector volumes (LeaCo’s XRI
+					water), day-by-day well status (Amplified gives the current status only), and daily-report notes.
+				</p>
+				{#if notOnMap.length}
+					<details>
+						<summary>{notOnMap.length} Amplified well{notOnMap.length > 1 ? 's have' : ' has'} no location and {notOnMap.length > 1 ? 'aren’t' : 'isn’t'} on the map</summary>
+						<ul>
+							{#each notOnMap as a (a.key)}
+								<li><button type="button" class="linkish" onclick={() => pickAsset(a.key)}>{a.name}</button> <span class="ops-muted">({a.customerId})</span></li>
+							{/each}
+						</ul>
+					</details>
+				{/if}
+				{#if notInAmplified.length}
+					<details>
+						<summary>{notInAmplified.length} state-record well{notInAmplified.length > 1 ? 's aren’t' : ' isn’t'} matched in Amplified</summary>
+						<ul>
+							{#each notInAmplified as w (w.key)}<li>{w.name}: <span class="ops-muted">{w.reason}</span></li>{/each}
+						</ul>
+					</details>
+				{/if}
+			</section>
+		{:else}
 		<section aria-labelledby="kpi-title" class="block">
 			<h2 id="kpi-title" class="ops-eyebrow">From the daily reports · {pText}</h2>
 			<KpiStrip {h} {endLabel} priorLabel={h.single ? priorLabel : null} />
@@ -124,31 +169,43 @@
 				<p class="check">The {endLabel} report’s rows add up to within a few barrels of its total. That’s normal rounding.</p>
 			{/if}
 		</section>
+		{/if}
 
 		<section aria-labelledby="trends-title" class="block">
 			<div class="block-head">
-				<h2 id="trends-title" class="ops-eyebrow">Day by day · all {dates.length} reports</h2>
+				<h2 id="trends-title" class="ops-eyebrow">Day by day · {amplifiedMode ? `last ${dates.length} days (Amplified lease ledger, UTC days)` : `all ${dates.length} reports`}</h2>
 				<p class="hint">Shaded = selected period. Click a day to show just that day.</p>
 			</div>
+			{#if amplifiedMode}
+				<div class="trends">
+					<TrendChart title="Oil produced" subtitle="barrels per day, all leases" values={ops.totals.map((t) => t.oil)} {dates} {period} color="var(--ops-oil)" format={(v) => fmt(v, 1)} onpick={pickDay} />
+					<TrendChart title="Produced water" subtitle="barrels per day, LeaCo’s own produced water" values={ops.totals.map((t) => t.producedWater ?? null)} {dates} {period} color="#5B7C99" format={(v) => fmt(v)} onpick={pickDay} />
+					<div class="missing-card">
+						<b>Water injected · Wells running · Injectors taking water</b>
+						<p>Missing: Amplified has no injection data and no day-by-day well status. Current well status is in the live panel above.</p>
+					</div>
+				</div>
+			{:else}
 			<div class="trends">
 				<TrendChart title="Water injected" subtitle="barrels per day" values={ops.totals.map((t) => t.water)} {dates} {period} color="var(--ops-water)" format={(v) => fmt(v)} onpick={pickDay} />
 				<TrendChart title="Oil produced" subtitle="barrels per day" values={ops.totals.map((t) => t.oil)} {dates} {period} color="var(--ops-oil)" format={(v) => fmt(v, 1)} onpick={pickDay} />
 				<TrendChart title="Wells running" subtitle="of {wellTotal} producing wells (report header)" values={wells} {dates} {period} kind="line" yMax={wellTotal} color="#2E8B3E" format={(v) => fmt(v)} onpick={pickDay} />
 				<TrendChart title="Injectors taking water" subtitle="of {injTotal} injectors (report header)" values={injectors} {dates} {period} kind="line" yMax={injTotal} color="var(--ops-water)" format={(v) => fmt(v)} onpick={pickDay} />
 			</div>
+			{/if}
 			<details class="table-view">
 				<summary>Show these numbers as a table</summary>
 				<div class="table-scroll">
 					<table>
-						<caption class="ops-sr">Daily totals from the LeaCo Daily Reports</caption>
+						<caption class="ops-sr">Daily totals</caption>
 						<thead>
-							<tr><th scope="col">Day</th><th scope="col">Water (bbl)</th><th scope="col">Oil (bbl)</th><th scope="col">Wells running</th><th scope="col">Injectors taking water</th></tr>
+							<tr><th scope="col">Day</th><th scope="col">{amplifiedMode ? 'Produced water (bbl)' : 'Water injected (bbl)'}</th><th scope="col">Oil (bbl)</th><th scope="col">Wells running</th><th scope="col">Injectors taking water</th></tr>
 						</thead>
 						<tbody>
 							{#each ops.totals.map((t, i) => ({ t, i })).reverse() as { t, i } (i)}
 								<tr class:sel={i >= period.s && i <= period.e}>
 									<th scope="row">{shortDay(dates[i])}</th>
-									<td>{fmt(t.water)}</td>
+									<td>{fmt(amplifiedMode ? (t.producedWater ?? null) : t.water)}</td>
 									<td>{fmt(t.oil, 1)}</td>
 									<td>{t.wellsRunning ? `${t.wellsRunning[0]} / ${t.wellsRunning[1]}` : 'No data'}</td>
 									<td>{t.injectorsTaking ? `${t.injectorsTaking[0]} / ${t.injectorsTaking[1]}` : 'No data'}</td>
@@ -172,6 +229,7 @@
 							periodText={pText}
 							{endLabel}
 							selected={selectedProperty === key}
+							statusNow={amplifiedMode}
 							onselect={() => pickProperty(selectedProperty === key ? null : key, true)}
 						/>
 					{/each}
@@ -223,7 +281,11 @@
 		</section>
 
 		<p class="foot">
-			Sources: {ops.source}; Amplified pumper-note snapshot; NM OCD well records (approximate locations); LeaCo KMZ (Winkler Ranch); BLM (Crawford Ranch); U.S. Census TIGER (routes, state line); USGS The National Map (background map).
+			{#if amplifiedMode}
+				Sources: {ops.source}; BLM (Crawford Ranch); U.S. Census TIGER (routes, state line); USGS The National Map (background map). Winkler Ranch’s boundary is LeaCo map data and isn’t shown here.
+			{:else}
+				Sources: {ops.source}; Amplified pumper-note snapshot; NM OCD well records (approximate locations); LeaCo KMZ (Winkler Ranch); BLM (Crawford Ranch); U.S. Census TIGER (routes, state line); USGS The National Map (background map).
+			{/if}
 			Operating-area outlines are drawn around LeaCo’s wells, not legal lease lines.
 		</p>
 	</main>
@@ -259,19 +321,6 @@
 		font-weight: 700;
 		letter-spacing: -0.01em;
 		line-height: 1.1;
-	}
-
-	.back {
-		width: fit-content;
-		font-size: 13px;
-		font-weight: 600;
-		color: var(--ops-accent);
-		text-decoration: none;
-		margin-bottom: 4px;
-	}
-
-	.back:hover {
-		text-decoration: underline;
 	}
 
 	.asof {
@@ -329,6 +378,53 @@
 		color: var(--ops-danger);
 		background: var(--ops-danger-soft);
 		border-color: var(--ops-danger);
+	}
+
+	.source {
+		display: grid;
+		gap: 6px;
+		font-size: 13px;
+		background: var(--ops-panel);
+		border: 1px dashed var(--ops-line);
+		border-radius: var(--ops-radius);
+		padding: 12px 14px;
+	}
+
+	.source summary {
+		cursor: pointer;
+		font-weight: 600;
+		color: var(--ops-accent);
+		width: fit-content;
+	}
+
+	.source ul {
+		display: grid;
+		gap: 2px;
+		margin-top: 4px;
+		padding-left: 4px;
+		font-size: 12.5px;
+	}
+
+	.linkish {
+		color: var(--ops-accent);
+		text-decoration: underline;
+		font-weight: 600;
+	}
+
+	.missing-card {
+		display: grid;
+		align-content: center;
+		gap: 6px;
+		background: var(--ops-sunken);
+		border: 1px dashed var(--ops-line);
+		border-radius: var(--ops-radius);
+		padding: 14px;
+		font-size: 13px;
+		color: var(--ops-muted);
+	}
+
+	.missing-card b {
+		color: var(--ops-ink);
 	}
 
 	.trends {

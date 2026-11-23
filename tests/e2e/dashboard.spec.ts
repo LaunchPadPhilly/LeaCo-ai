@@ -4,15 +4,18 @@ import { expect, test } from '@playwright/test';
  * Renders /dashboard signed in (local test session), fails on any console error, and saves
  * screenshots to .playwright/screenshots/ for review.
  */
-test('dashboard renders the rail and map without console errors', async ({ page }, info) => {
+test('home page shows the dashboard under the app header, without console errors', async ({ page }, info) => {
 	const errors: string[] = [];
 	page.on('console', (m) => {
 		if (m.type() === 'error') errors.push(m.text());
 	});
 	page.on('pageerror', (e) => errors.push(e.message));
 
-	const res = await page.goto('/dashboard');
-	expect(page.url(), 'redirected to sign-in: run `pnpm run dev:session` first').toContain('/dashboard');
+	const res = await page.goto('/');
+	expect(page.url(), 'redirected to sign-in: run `pnpm run dev:session` first').not.toContain('/api/auth/google');
+	// The dashboard is the signed-in home page, under the normal app header.
+	await expect(page.locator('header.site-header')).toBeVisible();
+	await expect(page.locator('header.site-header').getByRole('link', { name: 'Dashboard' })).toHaveAttribute('href', '/');
 	expect(res?.status()).toBe(200);
 
 	await expect(page.getByRole('heading', { name: 'Field sheet' })).toBeVisible();
@@ -43,7 +46,7 @@ test('dashboard renders the rail and map without console errors', async ({ page 
 test('numbers and graphs on top, map below; charts pick a day; wheel scrolls the page', async ({ page }, info) => {
 	const errors: string[] = [];
 	page.on('pageerror', (e) => errors.push(e.message));
-	await page.goto('/dashboard');
+	await page.goto('/');
 	await page.waitForTimeout(800);
 	await page.screenshot({ path: `.playwright/screenshots/${info.project.name}-08-fullpage.png`, fullPage: true });
 
@@ -93,7 +96,7 @@ test('layers panel turns routes, wells and other layers on and off', async ({ pa
 	const errors: string[] = [];
 	page.on('pageerror', (e) => errors.push(e.message));
 	await page.addInitScript(() => localStorage.removeItem('leaco:ops-layers')); // start from the Operations set
-	await page.goto('/dashboard');
+	await page.goto('/');
 	await page.waitForLoadState('networkidle');
 
 	// The old Census street layer is gone; the background map shows roads now.
@@ -149,7 +152,7 @@ test('detail drawer sends someone to an injector with Google and Apple Maps', as
 	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
 	const errors: string[] = [];
 	page.on('pageerror', (e) => errors.push(e.message));
-	await page.goto('/dashboard');
+	await page.goto('/');
 	// Wait for the page to finish loading its scripts before typing; an Enter
 	// pressed earlier is a plain form submit that reloads the page.
 	await page.waitForLoadState('networkidle');
@@ -192,7 +195,7 @@ test('background map fills the view at any zoom and can be switched', async ({ p
 		localStorage.removeItem('leaco:ops-basemap');
 		localStorage.removeItem('leaco:ops-layers');
 	});
-	await page.goto('/dashboard');
+	await page.goto('/');
 	await page.waitForLoadState('networkidle');
 
 	const map = page.getByRole('application');
@@ -233,7 +236,7 @@ test('background map fills the view at any zoom and can be switched', async ({ p
 test('live Amplified panel shows current well status, and a linked well shows its live readings', async ({ page }, info) => {
 	const errors: string[] = [];
 	page.on('pageerror', (e) => errors.push(e.message));
-	await page.goto('/dashboard');
+	await page.goto('/');
 	await page.waitForLoadState('networkidle');
 
 	const panel = page.getByRole('region', { name: /Live from Amplified/ });
@@ -254,11 +257,22 @@ test('live Amplified panel shows current well status, and a linked well shows it
 	await expect(box).toContainText(/Right now: (Running|Idle|Shutdown|No reading)/);
 	await expect(box).toContainText('Amplified asset East_Eumont_Unit_21');
 
-	// East Eumont 18 Injector is awaiting confirmation: it says so instead of guessing.
+	// East Eumont 18 Injector: Amplified labels it a plain well, so it's linked as "probable" and says so.
 	await search.fill('East Eumont Unit 18 Injector');
+	await search.press('Enter');
+	await expect(page.getByRole('region', { name: /Live from Amplified ·/ })).toContainText('Linked as probable, not confirmed');
+
+	// WHRB #20 is the ID/name conflict: not linked, and it says why instead of guessing.
+	await search.fill('W H Rhodes B Federal NCT-1 20');
 	await search.press('Enter');
 	await expect(page.getByRole('region', { name: /Live from Amplified ·/ })).toContainText('Not linked to Amplified yet');
 	await page.screenshot({ path: `.playwright/screenshots/${info.project.name}-14-not-linked.png` });
 
 	expect(errors).toEqual([]);
+});
+
+test('old /dashboard links land on the home page', async ({ page }) => {
+	await page.goto('/dashboard');
+	await expect(page).toHaveURL(/^https?:\/\/[^/]+\/$/);
+	await expect(page.getByRole('heading', { name: 'Field sheet' })).toBeVisible();
 });

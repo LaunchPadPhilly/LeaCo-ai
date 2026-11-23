@@ -4,6 +4,11 @@ Status: **R1 and R2 built** (2026-11-20). Light "field sheet" theme and map-firs
 approved; local Playwright test session approved and added (`pnpm run dev:session`).
 Builds on [PLAN.md](PLAN.md) Phase 1 (prototype parity).
 
+**Moved to the home page 2026-11-23 (owner request).** The dashboard is now the signed-in home
+page (`/`) under the normal app header (Dashboard · Admin · Settings · Sign out); the template's
+placeholder welcome page is gone and `/dashboard` redirects to `/`. The full-screen mode and the
+"← App" link in §2 are superseded.
+
 **Layout changed 2026-11-20 (owner request): numbers-first.** Graphs and all other information
 are on top: a sticky period picker, headline numbers, four day-by-day graphs with a table view,
 and property cards with the attention list beside them. The map is full width below. The map is

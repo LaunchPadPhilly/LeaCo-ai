@@ -68,6 +68,9 @@ export type AreaSummary = {
 	injectors: Record<InjectorStatus, number> & { total: number };
 	waterSeries: (number | null)[];
 	oilSeries: (number | null)[];
+	/** LeaCo's own produced water (Amplified lease ledger); null where only reports exist. */
+	producedWater: number | null;
+	producedWaterSeries: (number | null)[];
 };
 
 export function areaSummary(data: OpsData, key: AreaKey, p: Period): AreaSummary {
@@ -83,7 +86,7 @@ export function areaSummary(data: OpsData, key: AreaKey, p: Period): AreaSummary
 	}, 0);
 
 	const assets = data.assets.filter((a) => a.area === key);
-	const wells = { run: 0, down: 0, nodata: 0, unk: 0, total: 0 };
+	const wells = { run: 0, down: 0, idle: 0, nodata: 0, unk: 0, total: 0 };
 	const injectors = { take: 0, stuck: 0, idle: 0, nodata: 0, total: 0 };
 	for (const a of assets) {
 		if (a.kind === 'well') {
@@ -107,7 +110,9 @@ export function areaSummary(data: OpsData, key: AreaKey, p: Period): AreaSummary
 		wells,
 		injectors,
 		waterSeries: series.map((d) => d.water),
-		oilSeries: series.map((d) => d.oil)
+		oilSeries: series.map((d) => d.oil),
+		producedWater: sumReported(series.map((d) => d.producedWater ?? null), p).total,
+		producedWaterSeries: series.map((d) => d.producedWater ?? null)
 	};
 }
 
@@ -140,10 +145,12 @@ export function attention(data: OpsData, p: Period, area: AreaKey | null, dayLab
 	down.sort((a, b) => Number(Boolean(lastNote(b))) - Number(Boolean(lastNote(a))));
 	for (const a of down) {
 		const n = lastNote(a);
-		out.push({ asset: a, severity: 'high', text: n ? `${dayLabel(n.i)}: ${n.note}` : 'Down / shut off, no recent note' });
+		const live = !a.days.length; // Amplified mode: the status is Amplified's current reading
+		out.push({ asset: a, severity: 'high', text: n ? `${dayLabel(n.i)}: ${n.note}` : live ? 'Shut down right now (Amplified)' : 'Down / shut off, no recent note' });
 	}
+	// Without report history (Amplified mode) every injector is "no data": that's a known gap, not news.
 	for (const a of assets) {
-		if (a.kind === 'injector' && injectorPeriod(a, p).status === 'nodata') {
+		if (a.kind === 'injector' && a.days.length && injectorPeriod(a, p).status === 'nodata') {
 			out.push({ asset: a, severity: 'info', text: `No volume reading on ${dayLabel(p.e)}` });
 		}
 	}

@@ -120,6 +120,8 @@ function volumeSource(h: z.infer<typeof histSchema> | undefined): VolumeSource {
 }
 
 export async function loadOpsData(): Promise<OpsDataResult> {
+	// LEACO_KIT=off makes a local run behave like UAT (no private files): used to test Amplified mode.
+	if (process.env.LEACO_KIT === 'off') return { status: 'missing' };
 	try {
 		const [combinedRaw, ranchRaw, crawfordRaw, stateRaw] = await Promise.all(
 			['combined_data.json', 'ranch_features.json', 'crawford.json', 'stateline.json'].map(readJson)
@@ -189,6 +191,7 @@ export async function loadOpsData(): Promise<OpsDataResult> {
 		if (daily.status === 'ok') for (const r of daily.reports) reconciliation[r.date] = reconcile(r).status;
 
 		const data: OpsData = {
+			mode: 'reports',
 			dates,
 			totals: c.series.total.map((t) => ({
 				water: t.water ?? null,
