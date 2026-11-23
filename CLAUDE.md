@@ -67,7 +67,10 @@ promoted from one to the other.
 
 - `pnpm install --frozen-lockfile` — `postinstall` runs SvelteKit sync and `prisma generate`; needs `DATABASE_URL` present (placeholder ok).
 - `pnpm dev` / `pnpm run build` / `pnpm run preview` / `pnpm run start`.
-- `pnpm run check` — svelte-check. **The primary correctness gate.** There is no linter and no test suite; say so rather than implying tests exist.
+- `pnpm run check` — svelte-check. **The primary correctness gate.** There is no linter.
+- `pnpm run test:unit` — vitest, `tests/unit/`. Covers the LeaCo data rules (`src/lib/leaco/`) only; there are no route, auth or UI tests yet. The known-good-figures suite needs gitignored `data/private/daily_parsed.json` and skips without it (including in CI). Use `pnpm run test:unit`, not `pnpm exec vitest`, which fails to load in this repo.
+- `pnpm run amplified:sync` — pulls live Amplified data (well status, runtime, pressures, open tickets; 30 days of lease oil/produced water) into gitignored `data/private/amplified/live.json`. Read-only, ~7 requests. Wells are linked only through confirmed rows of `data/private/amplified/customer-id-worksheet.csv` (see `docs/leaco/amplified-findings.md`); `/dashboard` also re-syncs when its copy is over 15 minutes old. `pnpm run amplified:probe` saves raw sample responses. Amplified has no injected-water data: that still comes from the daily reports.
+- `pnpm run dev:session` then `pnpm run test:e2e` — Playwright screenshots of `/dashboard` at 1440 px and 380 px, failing on console errors (`tests/e2e/`, output in gitignored `.playwright/`). `dev:session` signs in a role-less test user by writing a session row to the **local** database; it refuses any non-localhost `DATABASE_URL`. Local only; not in CI.
 - `BUILD_TARGET=docker pnpm run build` — the `adapter-node` output ECS runs. A plain build only exercises `adapter-auto`. Keep both paths.
 - `pnpm run test` — **not a test suite**: environment/DB diagnostic. Validates `DATABASE_URL`'s structure (shared rules with `scripts/fix-secret-database-url.sh`) before connecting.
 - `pnpm run db:deploy` — apply committed migrations. `db:migrate` is `prisma migrate dev`, only for authoring against a database you own. After schema edits: `db:format`, `db:validate`, `db:generate`.
@@ -76,7 +79,7 @@ promoted from one to the other.
 - `pnpm run template:check` — zero-hit gate for placeholders, stray identifiers and email addresses.
 - `./scripts/smoke-test.sh <base-url> [--skip-redirect] [--db-check <path>]` — the pipeline's promotion gate.
 
-CI gates, in order: `db:validate`, `check`, `build`. Before pushing also run
+CI gates, in order: `db:validate`, `check`, `test:unit`, `build`. Before pushing also run
 `BUILD_TARGET=docker pnpm run build`; CI does not exercise the adapter the containers run.
 
 ## Architecture

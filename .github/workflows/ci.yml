@@ -42,5 +42,10 @@ jobs:
       - name: Type-check
         run: pnpm run check
 
+      # LeaCo data-rule tests. The known-figures suite skips here because LeaCo data
+      # is not committed (docs/leaco/PLAN.md, D5); the rule tests always run.
+      - name: Unit tests
+        run: pnpm run test:unit
+
       - name: Production build
         run: pnpm run build

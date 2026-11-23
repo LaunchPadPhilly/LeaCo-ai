@@ -29,6 +29,11 @@
 			point the signed-in redirect in <code>src/routes/+page.server.ts</code> at it.
 		</p>
 		<div class="grid">
+			<NavCard
+				href="/dashboard"
+				title="LeaCo Operations Dashboard"
+				description="Map of every well, injector and property, with water, oil and status for any report period."
+			/>
 			<NavCard href="/settings" title="Settings" description="Your scopes, connected AI clients, and appearance." />
 			{#if data.isAdmin}
 				<NavCard href="/admin" title="Admin" description="Agent tokens, connected apps, activity log, and users." />

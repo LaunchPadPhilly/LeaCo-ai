@@ -196,12 +196,17 @@ p {
 	margin: 0 0 1rem;
 }
 
-a {
+/*
+ * Element rules below that would leak into the LeaCo operations view are scoped with
+ * :where(:not(.ops *)): zero added specificity, so nothing else in the app changes, but the
+ * dashboard (src/lib/components/ops/ops.css) keeps its own look.
+ */
+a:where(:not(.ops *)) {
 	color: var(--warm-600);
 	text-underline-offset: 2px;
 }
 
-a:hover {
+a:where(:not(.ops *)):hover {
 	color: var(--warm-700);
 }
 
@@ -286,7 +291,7 @@ a:hover {
 	grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
 }
 
-button,
+button:where(:not(.ops *)),
 .button {
 	font: inherit;
 	font-weight: 550;
@@ -308,15 +313,15 @@ button,
 	transform: scale(var(--press-scale, 1));
 }
 
-button:hover:not(:disabled),
+button:where(:not(.ops *)):hover:not(:disabled),
 .button:hover {
 	background: var(--warm-700);
 	color: #fff;
 }
 
-button:focus-visible,
+button:where(:not(.ops *)):focus-visible,
 .button:focus-visible,
-a:focus-visible {
+a:where(:not(.ops *)):focus-visible {
 	outline: none;
 	box-shadow: var(--focus);
 }
@@ -327,7 +332,7 @@ a:focus-visible {
  * Swap to a muted fill with body-text colour so the label survives; both values are
  * theme variables, so this holds in dark mode too.
  */
-button:disabled,
+button:where(:not(.ops *)):disabled,
 .button:disabled {
 	opacity: 1;
 	background: var(--warm-100);
@@ -362,21 +367,21 @@ button:disabled,
 	overflow-x: auto;
 }
 
-table {
+table:where(:not(.ops *)) {
 	width: 100%;
 	border-collapse: collapse;
 	font-size: 0.95rem;
 }
 
-th,
-td {
+th:where(:not(.ops *)),
+td:where(:not(.ops *)) {
 	text-align: left;
 	padding: 0.7rem 0.85rem;
 	border-bottom: 1px solid var(--border);
 	white-space: nowrap;
 }
 
-th {
+th:where(:not(.ops *)) {
 	font-size: 0.78rem;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
@@ -384,7 +389,7 @@ th {
 	font-weight: 650;
 }
 
-tbody tr:hover {
+tbody tr:where(:not(.ops *)):hover {
 	background: var(--warm-100);
 }
 
