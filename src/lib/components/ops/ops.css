@@ -1,0 +1,111 @@
+/*
+ * "Field sheet" theme for the /dashboard operations view (docs/leaco/DASHBOARD-REDESIGN.md §1).
+ * Every rule is scoped under .ops so it can't affect the rest of the app, and the app theme's
+ * element styles (h1, p, button, .card…) are reset inside it.
+ */
+.ops {
+	--ops-bg: #ece9e1;
+	--ops-panel: #ffffff;
+	--ops-sunken: #f5f3ee;
+	--ops-ink: #1b2127;
+	--ops-muted: #5f666d;
+	--ops-line: #dedad1;
+	--ops-accent: #0e6f8e;
+	--ops-accent-soft: #e2f0f4;
+	--ops-danger: #c8322b;
+	--ops-danger-soft: #fbeceb;
+	--ops-good: #2e8b3e;
+	--ops-water: #1f6fd1;
+	--ops-oil: #a65a0a;
+	--ops-radius: 10px;
+	--ops-shadow: 0 1px 2px rgb(27 33 39 / 6%), 0 4px 14px rgb(27 33 39 / 8%);
+	--ops-font: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+	min-height: 100vh;
+	color: var(--ops-ink);
+	background: var(--ops-bg);
+	font-family: var(--ops-font);
+	font-size: 14px;
+	line-height: 1.4;
+	font-variant-numeric: tabular-nums;
+	-webkit-font-smoothing: antialiased;
+}
+
+.ops *,
+.ops *::before,
+.ops *::after {
+	box-sizing: border-box;
+}
+
+/* Full-window screens (the empty / error state). The dashboard itself scrolls like a page. */
+.ops.ops-screen {
+	position: fixed;
+	inset: 0;
+	z-index: 10;
+}
+
+.ops :is(h1, h2, h3, h4, h5, p, ul, ol, dl, dd, figure) {
+	margin: 0;
+	padding: 0;
+	font-size: inherit;
+	font-weight: inherit;
+	letter-spacing: normal;
+	color: inherit;
+}
+
+.ops ul {
+	list-style: none;
+}
+
+.ops button,
+.ops select,
+.ops input {
+	font: inherit;
+	color: inherit;
+	margin: 0;
+}
+
+.ops button {
+	cursor: pointer;
+	background: none;
+	border: 0;
+	padding: 0;
+	box-shadow: none;
+	transform: none;
+}
+
+.ops :focus-visible {
+	outline: 2.5px solid var(--ops-accent);
+	outline-offset: 2px;
+	border-radius: 6px;
+}
+
+.ops .ops-muted {
+	color: var(--ops-muted);
+}
+
+.ops .ops-eyebrow {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--ops-muted);
+}
+
+.ops .ops-sr {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ops *,
+	.ops *::before,
+	.ops *::after {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+	}
+}
