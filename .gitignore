@@ -43,3 +43,5 @@ deploy/
 /.playwright/
 /test-results/
 /playwright-report/
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
