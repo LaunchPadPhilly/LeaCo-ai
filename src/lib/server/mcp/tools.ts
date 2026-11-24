@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { prisma } from '$lib/server/prisma';
 import type { McpToolDefinition } from '$lib/server/mcp/handler';
 import { amplifiedTools } from '$lib/server/amplified/tools';
+import { documentTools, documentsInstructions } from '$lib/server/documents/tools';
 
 /**
  * The tools this deployment exposes over MCP. Both entry points import this list
@@ -44,5 +45,10 @@ export const mcpTools: readonly McpToolDefinition[] = [
 	},
 	// Amplified Customer API connector (src/lib/server/amplified). Registered in every
 	// environment; returns a NOT_CONFIGURED error until AMPLIFIED_API_KEY is set.
-	...amplifiedTools
+	...amplifiedTools,
+	// Dropbox document source (src/lib/server/documents, ADR 0003). Gated by documents:read.
+	...documentTools
 ];
+
+/** Server instructions both entry points pass to createMcpHandler. */
+export const mcpInstructions = documentsInstructions;

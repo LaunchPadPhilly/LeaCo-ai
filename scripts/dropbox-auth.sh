@@ -8,6 +8,11 @@
 # visible in the process list), and never printed. Run from the repository root.
 set -euo pipefail
 
+# Git Bash on Windows rewrites arguments that start with "/" into Windows paths before they
+# reach native programs such as jq.exe, which turned DROPBOX_ROOT_PATH "/LeaCo - Oncor" into
+# "C:/Program Files/Git/LeaCo - Oncor". Turn that off; it is a no-op elsewhere.
+export MSYS_NO_PATHCONV=1
+
 ENV_FILE=".env.local"
 API="https://api.dropboxapi.com"
 
