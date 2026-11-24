@@ -53,7 +53,7 @@
 		<li class="kpi">
 			<span class="label" title={t.help}>{t.label}</span>
 			<span class="value" class:none={t.value === 'No data'}>
-				{t.value}{#if t.unit && t.value !== 'No data'}<small> {t.unit}</small>{/if}
+				{t.value}{#if t.unit && t.value !== 'No data'}<small>{' ' + t.unit}</small>{/if}
 			</span>
 			{#if t.sub}
 				<span class="sub" class:up={t.delta !== null && t.delta > 0} class:down={t.delta !== null && t.delta < 0}>
@@ -103,7 +103,6 @@
 	}
 
 	.value small {
-		margin-left: 0.25em;
 		font-size: 13px;
 		font-weight: 600;
 		color: var(--ops-muted);

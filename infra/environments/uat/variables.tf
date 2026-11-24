@@ -36,7 +36,11 @@ variable "app_secret_name" {
 variable "web_secret_keys" {
   description = "Secret keys injected into the web container. Keep in lockstep with .env.example."
   type        = list(string)
+  # AMPLIFIED_API_KEY: the /dashboard Amplified connector runs in the web container
+  # (src/lib/server/leaco/amplifiedSync.ts). The key is already in uat/leaco/app for the mcp
+  # container, so listing it here cannot fail task start.
   default = [
+    "AMPLIFIED_API_KEY",
     "DATABASE_URL",
     "GOOGLE_ALLOWED_DOMAIN", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_REDIRECT_URI",
     "INITIAL_ADMIN_EMAIL",

@@ -1,17 +1,20 @@
 <script lang="ts">
 	import { appConfig } from '$lib/appConfig';
-	import NavCard from '$lib/components/ui/NavCard.svelte';
+	import DashboardScreen from '$lib/components/ops/DashboardScreen.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 </script>
 
 <svelte:head>
-	<title>{appConfig.displayName}</title>
+	<title>{data.signedIn ? `LeaCo Operations · ${appConfig.displayName}` : appConfig.displayName}</title>
 </svelte:head>
 
-<div class="page page--narrow">
-	{#if !data.signedIn}
+{#if data.signedIn}
+	<!-- Signed-in home is the LeaCo operations dashboard, under the normal app header. -->
+	<DashboardScreen dashboard={data.dashboard} />
+{:else}
+	<div class="page page--narrow">
 		<div class="card hero">
 			<span class="eyebrow">{appConfig.displayName}</span>
 			<h1>Your organization's data, queryable by people and by AI agents</h1>
@@ -22,25 +25,8 @@
 			</p>
 			<a class="button" href="/api/auth/google/login">Sign in with Google</a>
 		</div>
-	{:else}
-		<h1>Welcome</h1>
-		<p class="muted">
-			This is the template's placeholder home. Replace it with the client's first data page, and
-			point the signed-in redirect in <code>src/routes/+page.server.ts</code> at it.
-		</p>
-		<div class="grid">
-			<NavCard
-				href="/dashboard"
-				title="LeaCo Operations Dashboard"
-				description="Map of every well, injector and property, with water, oil and status for any report period."
-			/>
-			<NavCard href="/settings" title="Settings" description="Your scopes, connected AI clients, and appearance." />
-			{#if data.isAdmin}
-				<NavCard href="/admin" title="Admin" description="Agent tokens, connected apps, activity log, and users." />
-			{/if}
-		</div>
-	{/if}
-</div>
+	</div>
+{/if}
 
 <style>
 	.hero {
@@ -49,11 +35,5 @@
 
 	.hero h1 {
 		font-size: var(--fs-display);
-	}
-
-	.grid {
-		display: grid;
-		gap: var(--space-3);
-		grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
 	}
 </style>

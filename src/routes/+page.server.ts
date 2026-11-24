@@ -1,12 +1,10 @@
+import { loadDashboard } from '$lib/server/leaco/dashboardLoad';
 import type { PageServerLoad } from './$types';
 
+// Signed-in home is the LeaCo operations dashboard. Any signed-in user may view it: sign-in is
+// already limited to the allowed Workspace domains. A dedicated LeaCo data scope
+// (requireScopePage) is a follow-up; see docs/leaco/PLAN.md.
 export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) return { signedIn: false as const };
-
-	// The template has no domain landing page yet. Once the client's first data page
-	// exists, redirect signed-in users there: `throw redirect(303, '/reports')`.
-	return {
-		signedIn: true as const,
-		isAdmin: locals.user.roles.some((userRole) => userRole.role.name === 'ADMIN')
-	};
+	return { signedIn: true as const, dashboard: await loadDashboard() };
 };

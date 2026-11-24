@@ -19,8 +19,8 @@
 		if (!user) return [];
 
 		return [
-			// Shown to every signed-in user, matching /dashboard's own guard (sign-in only).
-			{ href: '/dashboard', label: 'Dashboard', show: true },
+			// The dashboard is the signed-in home page.
+			{ href: '/', label: 'Dashboard', show: true },
 			{ href: '/admin', label: 'Admin', show: user.isAdmin },
 			{ href: '/settings', label: 'Settings', show: true }
 		].filter((link) => link.show);
@@ -49,16 +49,12 @@
 	// /admin/users/[id] and back) doesn't replay it.
 	const topLevelSegment = $derived(page.url.pathname.split('/')[1] ?? '');
 
-	// The LeaCo operations view is a full-screen tool with its own look (docs/leaco/DASHBOARD-REDESIGN.md),
-	// so the app header is not drawn over it.
-	const fullBleed = $derived(topLevelSegment === 'dashboard');
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-{#if !fullBleed}
 <header class="site-header">
 	<div class="site-header__inner">
 		<a class="site-header__brand" href="/">{appConfig.displayName}</a>
@@ -84,7 +80,6 @@
 		</nav>
 	</div>
 </header>
-{/if}
 
 {#key topLevelSegment}
 	<div in:fly={screenEnter} out:fade={screenExit}>

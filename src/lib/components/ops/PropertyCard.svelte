@@ -14,6 +14,7 @@
 		periodText,
 		endLabel,
 		selected,
+		statusNow = false,
 		onselect
 	}: {
 		property: Property;
@@ -22,6 +23,8 @@
 		periodText: string;
 		endLabel: string;
 		selected: boolean;
+		/** Well status is Amplified's current reading (Amplified mode), not a report day. */
+		statusNow?: boolean;
 		onselect: () => void;
 	} = $props();
 
@@ -29,7 +32,10 @@
 	const share = (v: number | null) => (v === null ? 'no data' : `${v}%`);
 	const role = $derived.by(() => {
 		if (!summary) return null;
-		if (property.key === 'mlmu') return `Water hub: took ${share(summary.waterShare)} of water injected · ${share(summary.oil30Share)} of 30-day oil`;
+		if (property.key === 'mlmu')
+			return statusNow
+				? `Water hub (water injected is missing: not in Amplified) · ${share(summary.oil30Share)} of 30-day oil`
+				: `Water hub: took ${share(summary.waterShare)} of water injected · ${share(summary.oil30Share)} of 30-day oil`;
 		if (property.key === 'eeu') return `Oil producer: ${share(summary.oil30Share)} of 30-day oil`;
 		return `Small oil leases: ${share(summary.oil30Share)} of 30-day oil. XRI water enters here.`;
 	});
@@ -46,8 +52,13 @@
 		<p class="role">{role}</p>
 		<dl class="kv">
 			<div>
-				<dt>Water, {periodText}</dt>
-				<dd>{fmt(summary.water)} bbl{#if !single}<small>{fmt(summary.waterPerDay)}/day</small>{/if}</dd>
+				{#if statusNow}
+					<dt>Produced water, {periodText}</dt>
+					<dd>{fmt(summary.producedWater)}{#if summary.producedWater !== null}{' bbl'}{/if}</dd>
+				{:else}
+					<dt>Water, {periodText}</dt>
+					<dd>{fmt(summary.water)}{#if summary.water !== null}{' bbl'}{/if}{#if !single}<small>{fmt(summary.waterPerDay)}/day</small>{/if}</dd>
+				{/if}
 			</div>
 			<div>
 				<dt>Oil, {periodText}</dt>
@@ -59,7 +70,11 @@
 			</div>
 		</dl>
 		<div class="sparks">
-			<div><Sparkline values={summary.waterSeries} {period} color="var(--ops-water)" label="Water by day for {property.name}" /><span>water by day</span></div>
+			{#if statusNow}
+				<div><Sparkline values={summary.producedWaterSeries} {period} color="#5B7C99" label="Produced water by day for {property.name}" /><span>produced water by day</span></div>
+			{:else}
+				<div><Sparkline values={summary.waterSeries} {period} color="var(--ops-water)" label="Water by day for {property.name}" /><span>water by day</span></div>
+			{/if}
 			<div><Sparkline values={summary.oilSeries} {period} color="var(--ops-oil)" label="Oil by day for {property.name}" /><span>oil by day</span></div>
 		</div>
 
@@ -71,11 +86,12 @@
 				parts={[
 					{ count: w.run, color: WELL_STATUS.run.color, name: 'running' },
 					{ count: w.down, color: WELL_STATUS.down.color, name: 'down' },
+					{ count: w.idle, color: WELL_STATUS.idle.color, name: 'idle' },
 					{ count: w.nodata + w.unk, color: WELL_STATUS.nodata.color, name: 'no data or not mentioned' }
 				]}
 			/>
 			<p class="barlbl">
-				<span>Wells on {endLabel}: <b>{w.run}</b> running · <b class:bad={w.down > 0}>{w.down}</b> down{#if w.nodata + w.unk}{' · '}{w.nodata + w.unk} not reported{/if}</span>
+				<span>Wells {statusNow ? 'right now' : `on ${endLabel}`}: <b>{w.run}</b> running · <b class:bad={w.down > 0}>{w.down}</b> down{#if w.idle}{' · '}{w.idle} idle{/if}{#if w.nodata + w.unk}{' · '}{w.nodata + w.unk} not reported{/if}</span>
 				<span>{w.total}</span>
 			</p>
 		{/if}
@@ -92,7 +108,11 @@
 				]}
 			/>
 			<p class="barlbl">
+				{#if statusNow}
+					<span>Injectors: water injected is missing (Amplified has no injection data)</span>
+				{:else}
 				<span>Injectors: <b>{i.take}</b> took water{single ? '' : ' in period'}{#if i.stuck}{' · '}<b class="bad">{i.stuck} stuck</b>{/if}{#if i.nodata}{' · '}{i.nodata} no reading{/if}</span>
+				{/if}
 				<span>{i.total}</span>
 			</p>
 		{/if}
@@ -105,7 +125,7 @@
 	{/if}
 
 	{#if property.warn}<p class="warn">{property.warn}</p>{/if}
-	<p class="src">Source: {property.source}</p>
+	<p class="src">Source: {statusNow && property.kind === 'operating' ? 'Amplified API (oil, produced water, well status); NM OCD (operator)' : property.source}</p>
 </article>
 
 <style>

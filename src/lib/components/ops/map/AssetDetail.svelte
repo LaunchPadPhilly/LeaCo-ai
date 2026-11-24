@@ -45,7 +45,8 @@
 	});
 	async function copyLocation() {
 		try {
-			await navigator.clipboard.writeText(shareText(asset));
+			if (!loc) return;
+			await navigator.clipboard.writeText(shareText(loc));
 			copied = 'ok';
 		} catch {
 			copied = 'failed';
@@ -53,7 +54,8 @@
 	}
 	async function shareLocation() {
 		try {
-			await navigator.share({ title: asset.name, text: shareText(asset) });
+			if (!loc) return;
+			await navigator.share({ title: asset.name, text: shareText(loc) });
 		} catch {
 			/* cancelled by the user, or not allowed: nothing to do */
 		}
@@ -70,8 +72,15 @@
 	const style = $derived(asset.kind === 'well' ? WELL_STATUS[wellStatus(asset, period)] : INJECTOR_STATUS[inj!.status]);
 	const snapshot = $derived(asset.snapshotDate ? shortDay(asset.snapshotDate) : null);
 
+	/** No daily-report history: Amplified mode, where status and readings are live. */
+	const noHistory = $derived(asset.days.length === 0);
+	const loc = $derived(asset.lat !== null && asset.lon !== null ? { ...asset, lat: asset.lat, lon: asset.lon } : null);
+
 	const runtimeMentioned = $derived.by(() => {
-		for (let i = period.e; i >= 0; i--) if (asset.days[i]?.runtime !== null) return { i, rt: asset.days[i].runtime! };
+		for (let i = Math.min(period.e, asset.days.length - 1); i >= 0; i--) {
+			const rt = asset.days[i]?.runtime;
+			if (rt !== null && rt !== undefined) return { i, rt };
+		}
 		return null;
 	});
 	const runtimeDays = $derived(asset.days.map((d, i) => ({ d, i })).filter(({ d }) => d.runtime !== null).reverse());
@@ -83,7 +92,9 @@
 
 	const rows = $derived.by(() => {
 		const r: [string, string | null][] = [];
-		if (asset.kind === 'injector') {
+		if (noHistory) {
+			if (asset.kind === 'injector') r.push(['Water injected', 'Missing: not in Amplified']);
+		} else if (asset.kind === 'injector') {
 			r.push([`Injected on ${endDay}`, volumeText(asset.days[period.e])]);
 			r.push(['Average pressure that day', pressureText(asset.days[period.e])]);
 		} else {
@@ -95,7 +106,9 @@
 		r.push(['Lease type', asset.landType]);
 		r.push(['Operator of record', asset.operator]);
 		r.push(['State well name', asset.stateName]);
-		return r.filter(([, v]) => v !== null && v !== '');
+		r.push(['API number', asset.api]);
+		// From reports, empty fields are just left out; from Amplified, they are reported as missing.
+		return noHistory ? r.map(([k, v]): [string, string | null] => [k, v === null || v === '' ? 'Missing' : v]) : r.filter(([, v]) => v !== null && v !== '');
 	});
 </script>
 
@@ -108,7 +121,7 @@
 				<p class="sub">
 					{asset.kind === 'well' ? 'Producing well' : 'Injector'} ·
 					<b style:color={style.color === '#8DB8E8' ? '#3E7FBF' : style.color}>{style.label}</b>
-					· {asset.kind === 'injector' && period.s !== period.e ? pText : `as of ${endDay}`}
+					· {noHistory ? 'right now (Amplified)' : asset.kind === 'injector' && period.s !== period.e ? pText : `as of ${endDay}`}
 				</p>
 			</div>
 		</div>
@@ -128,13 +141,17 @@
 
 	<section class="go" aria-labelledby="go-title">
 		<h3 id="go-title">Send someone here</h3>
-		<p class="coords"><span>{coordinates(asset)}</span> <small>{LOCATION_CAVEAT}</small></p>
+		{#if loc}
+		<p class="coords"><span>{coordinates(loc)}</span> <small>{LOCATION_CAVEAT}</small></p>
 		<div class="go-actions">
-			<a class="go-btn primary" href={googleDirectionsUrl(asset)} target="_blank" rel="noopener noreferrer">Google Maps</a>
-			<a class="go-btn" href={appleDirectionsUrl(asset)} target="_blank" rel="noopener noreferrer">Apple Maps</a>
+			<a class="go-btn primary" href={googleDirectionsUrl(loc)} target="_blank" rel="noopener noreferrer">Google Maps</a>
+			<a class="go-btn" href={appleDirectionsUrl(loc)} target="_blank" rel="noopener noreferrer">Apple Maps</a>
 			<button type="button" class="go-btn" onclick={copyLocation}>Copy location</button>
 			{#if canShare}<button type="button" class="go-btn" onclick={shareLocation}>Share…</button>{/if}
 		</div>
+		{:else}
+		<p class="coords"><small>Location missing: this Amplified asset isn’t linked to a state well record, so there’s no location to send.</small></p>
+		{/if}
 		{#if copied === 'ok'}
 			<p class="go-msg" role="status">Copied: name, API number, coordinates and both map links.</p>
 		{:else if copied === 'failed'}
@@ -160,7 +177,7 @@
 		</section>
 	{/if}
 
-	{#if asset.kind === 'injector'}
+	{#if asset.kind === 'injector' && !noHistory}
 		<section>
 			<h3>Daily injection <span class="ops-muted">(shaded = {pText})</span></h3>
 			<InjectorChart days={asset.days} {dates} {period} />
@@ -192,11 +209,17 @@
 	{#if notesOutside}
 		<p class="fine">{notesOutside} more day{notesOutside > 1 ? 's' : ''} of notes outside {pText}. Widen the period to see them.</p>
 	{/if}
-	{#if !mentioned}
+	{#if noHistory}
+		<p class="fine">No daily reports in this environment, so report notes and injection history are missing.</p>
+	{:else if !mentioned}
 		<p class="fine">Not mentioned in the {dates.length} daily reports.{snapshot ? ` Status details are from the Amplified snapshot of ${snapshot}.` : ''}</p>
 	{/if}
 
+	{#if noHistory}
+		<p class="src">Sources: Amplified API (status, readings, tickets){asset.api ? '; NM OCD (API number, operator, location; approximate)' : ''}.</p>
+	{:else}
 	<p class="src">Sources: LeaCo Daily Reports {shortDay(dates[0])}–{shortDay(dates[dates.length - 1])}{snapshot ? `; Amplified snapshot ${snapshot}` : ''}; NM OCD (API number, operator, location; approximate).</p>
+	{/if}
 </aside>
 
 <style>

@@ -1,102 +1,62 @@
-import { readFile, rename, writeFile, mkdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { readFile, rename, writeFile } from 'node:fs/promises';
 import { AmplifiedError, getAssets, getData } from '../amplified/client.ts';
 import { isAmplifiedConfigured } from '../amplified/config.ts';
 import type { AssetResult, TagData } from '../amplified/types.ts';
-import { leaseArea, type LiveLease, type LiveRunStatus, type LiveSnapshot, type LiveState, type LiveTicket, type LiveWell } from '../../leaco/ops/live.ts';
+import {
+	LIVE_STALE_MS,
+	leaseArea,
+	type LiveLease,
+	type LiveRunStatus,
+	type LiveSnapshot,
+	type LiveState,
+	type LiveTicket,
+	type LiveWell
+} from '../../leaco/ops/live.ts';
+import reference from '../../leaco/reference/wells.json' with { type: 'json' };
 
 /**
- * Pulls the current Amplified data for LeaCo and saves it as a snapshot the dashboard reads.
- * Read-only (GET) and about 7 requests per run, well under the 100/minute limit.
+ * The Amplified connector for the dashboard: source → (memory) → dashboard.
  *
- * Wells are linked through the reviewed worksheet (docs/leaco/amplified-findings.md): only rows
- * with a new ID and no open "CONFIRM" note are used, so nothing is matched by guesswork. Once
- * LeaCo sets those IDs in Amplified, the API's customer_asset_id will equal ours directly.
+ * Pulls every well and lease LeaCo has in Amplified (read-only GET, ~8 requests, well under the
+ * 100/minute limit) and keeps the result in this server process's memory, so it works in any
+ * container. Wells are tied to public state records (src/lib/leaco/reference/wells.json) only
+ * through reviewed links: "confirmed", or "probable" (same lease and number, kind labelled
+ * differently). The one conflicting asset is shown on its own, unlinked. Nothing is guessed.
  *
- * Interim storage: gitignored data/private/amplified/live.json (local). Deployed environments
- * move this to Postgres with the rest of the sync (PLAN §2a).
+ * Locally, where data/private/ exists, the snapshot is also cached there so a dev-server
+ * restart doesn't need a fresh pull. Deployed, it lives in memory and refreshes every 15 min.
  */
-const DIR = 'data/private/amplified';
-const SNAPSHOT = `${DIR}/live.json`;
-const WORKSHEET = `${DIR}/customer-id-worksheet.csv`;
-const COMBINED = 'data/private/combined_data.json';
+const CACHE_DIR = 'data/private/amplified';
+const CACHE_FILE = `${CACHE_DIR}/live.json`;
 
 const WELL_TAGS = ['well_run_status', 'daily_runtime', 'tubing_pressure', 'casing_pressure', 'last_connection', 'tickets'];
 const LEASE_TAGS = ['daily_oil_production', 'daily_water_production'];
-const LEASE_DAYS = 30;
+/** 60 days so 30-day oil totals can be computed for each of the last 30 days. */
+const LEASE_DAYS = 60;
 const DAY_MS = 86_400_000;
 
-// ---------- reading the link table
+type RefWell = (typeof reference.wells)[number];
 
-function parseCsv(text: string): string[][] {
-	const rows: string[][] = [];
-	for (const line of text.replace(/^﻿/, '').replace(/\r/g, '').split('\n')) {
-		if (!line.trim()) continue;
-		const cells: string[] = [];
-		let cur = '';
-		let quoted = false;
-		for (let i = 0; i < line.length; i++) {
-			const ch = line[i];
-			if (quoted) {
-				if (ch === '"' && line[i + 1] === '"') {
-					cur += '"';
-					i++;
-				} else if (ch === '"') quoted = false;
-				else cur += ch;
-			} else if (ch === '"') quoted = true;
-			else if (ch === ',') {
-				cells.push(cur);
-				cur = '';
-			} else cur += ch;
-		}
-		cells.push(cur);
-		rows.push(cells);
-	}
-	return rows;
-}
+// ---------- links from the committed public reference
 
-type Link = { customerAssetId: string; key: string };
-
-async function readLinks(): Promise<{ links: Link[]; notLinked: Record<string, string> }> {
-	const [sheetText, combinedText] = await Promise.all([readFile(WORKSHEET, 'utf8'), readFile(COMBINED, 'utf8')]);
-	const [header, ...rows] = parseCsv(sheetText);
-	const col = (name: string) => header.indexOf(name);
-	const [cType, cWell, cCurrent, cCheck] = ['type', 'leaco_well', 'current_customer_asset_id', 'check'].map(col);
-	if ([cType, cWell, cCurrent, cCheck].some((c) => c < 0)) throw new Error('The ID worksheet is missing a column.');
-
-	const assets = (JSON.parse(combinedText) as { assets: { key: string }[] }).assets;
-	const ourKeys = new Set(assets.map((a) => a.key));
-
-	const links: Link[] = [];
-	const linked = new Set<string>();
-	const pending = new Map<string, string>();
-	for (const r of rows) {
-		if (r[cType] !== 'well') continue;
-		// leaco_well says which of our wells the row is, even when no new ID exists yet.
-		const key = r[cWell];
-		if (!key || !ourKeys.has(key)) continue;
-		if (r[cCheck]) pending.set(key, r[cCheck].replace(/^CONFIRM:\s*/, ''));
-		else {
-			links.push({ customerAssetId: r[cCurrent], key });
-			linked.add(key);
-		}
-	}
+function links() {
+	const byAmplifiedId = new Map<string, RefWell>();
 	const notLinked: Record<string, string> = {};
-	for (const a of assets) {
-		if (linked.has(a.key)) continue;
-		notLinked[a.key] = pending.get(a.key) ?? 'No Amplified asset with an ID was found for this well.';
+	for (const w of reference.wells) {
+		const link = w.amplified;
+		if (link && (link.status === 'confirmed' || link.status === 'probable')) byAmplifiedId.set(link.customerAssetId, w);
+		else notLinked[w.key] = link?.note ?? 'No Amplified asset has an ID for this well yet.';
 	}
-	return { links, notLinked };
+	return { byAmplifiedId, notLinked };
 }
 
-// ---------- shaping values
+// ---------- shaping values (Bad quality or missing → null, never zero)
 
 const good = (d: TagData | undefined) => (d && d.quality !== 'Bad' ? d.value : null);
 const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : null);
 const str = (v: unknown) => (typeof v === 'string' && v.trim() ? v : null);
-
-function runStatus(v: unknown): LiveRunStatus | null {
-	return v === 'Running' || v === 'Shutdown' || v === 'Idle' ? v : null;
-}
+const runStatus = (v: unknown): LiveRunStatus | null => (v === 'Running' || v === 'Shutdown' || v === 'Idle' ? v : null);
 
 function tickets(d: TagData | undefined): LiveTicket[] {
 	return (d?.values ?? [])
@@ -113,11 +73,17 @@ function tickets(d: TagData | undefined): LiveTicket[] {
 		}));
 }
 
-function toWell(r: AssetResult, key: string): LiveWell {
+function toWell(r: AssetResult, ref: RefWell | undefined): LiveWell {
+	const id = r.metadata.customer_asset_id ?? '';
+	const link = ref?.amplified;
 	return {
-		key,
-		customerAssetId: r.metadata.customer_asset_id ?? '',
+		key: ref ? ref.key : `AMP-${id}`,
+		customerAssetId: id,
 		amplifiedId: r.metadata.amplified_id ?? null,
+		name: r.metadata.asset_name ?? id.replace(/_/g, ' '),
+		leaseName: r.metadata.lease_name ?? null,
+		link: link?.status === 'confirmed' || link?.status === 'probable' ? link.status : null,
+		linkNote: link?.status === 'probable' ? link.note : null,
 		status: runStatus(good(r.data.well_run_status)),
 		runtimeYesterday: num(good(r.data.daily_runtime)),
 		tubingPressure: num(good(r.data.tubing_pressure)),
@@ -150,11 +116,13 @@ function toLease(r: AssetResult, todayUtc: string): LiveLease {
 	};
 }
 
-// ---------- sync
+// ---------- state
 
+let current: LiveSnapshot | null = null;
+let lastError: string | null = null;
 let running: Promise<LiveState> | null = null;
 
-/** Runs one sync. Concurrent callers share the same run. */
+/** Runs one sync now. Concurrent callers share the same run. */
 export function syncAmplified(): Promise<LiveState> {
 	running ??= runSync().finally(() => (running = null));
 	return running;
@@ -162,66 +130,81 @@ export function syncAmplified(): Promise<LiveState> {
 
 async function runSync(): Promise<LiveState> {
 	if (!isAmplifiedConfigured()) return { status: 'none', reason: 'AMPLIFIED_API_KEY is not set in this environment.' };
-	let previous: LiveSnapshot | null = null;
 	try {
-		previous = JSON.parse(await readFile(SNAPSHOT, 'utf8')) as LiveSnapshot;
-	} catch {
-		/* first run */
-	}
-
-	try {
-		const { links, notLinked } = await readLinks();
+		const { byAmplifiedId, notLinked } = links();
 		const assets = await getAssets();
-		const available = new Set(assets.wells);
 		const warnings: string[] = [];
 
-		const active = links.filter((l) => available.has(l.customerAssetId));
-		for (const l of links) if (!available.has(l.customerAssetId)) notLinked[l.key] = `Amplified no longer lists ${l.customerAssetId}.`;
-
-		const wellResults = await getData({ assets: active.map((l) => ({ type: 'well' as const, customer_asset_id: l.customerAssetId, tags: WELL_TAGS })) });
-		const keyById = new Map(active.map((l) => [l.customerAssetId, l.key]));
+		const wellResults = await getData({ assets: assets.wells.map((id) => ({ type: 'well' as const, customer_asset_id: id, tags: WELL_TAGS })) });
 		const wells: Record<string, LiveWell> = {};
 		for (const r of wellResults) {
-			const key = keyById.get(r.metadata.customer_asset_id ?? '');
-			if (!key) continue;
-			wells[key] = toWell(r, key);
-			// Expected per docs: LATEST-only tags never error in LATEST mode, so an error here is worth surfacing.
-			for (const e of r.errors) warnings.push(`${key}: ${e}`);
+			const w = toWell(r, byAmplifiedId.get(r.metadata.customer_asset_id ?? ''));
+			wells[w.key] = w;
+			for (const e of r.errors) warnings.push(`${w.customerAssetId}: ${e}`);
 		}
+		// Linked in the reference but no longer listed by Amplified.
+		for (const [id, ref] of byAmplifiedId) if (!assets.wells.includes(id)) notLinked[ref.key] = `Amplified no longer lists ${id}.`;
 
 		const now = Date.now();
-		const todayUtc = new Date(now).toISOString().slice(0, 10);
 		const leaseResults = await getData({
 			assets: assets.leases.map((id) => ({ type: 'lease' as const, customer_asset_id: id, tags: LEASE_TAGS })),
 			start: now - LEASE_DAYS * DAY_MS,
 			end: now
 		});
+		const todayUtc = new Date(now).toISOString().slice(0, 10);
 		const leases = leaseResults.map((r) => toLease(r, todayUtc));
 		for (const r of leaseResults) for (const e of r.errors) warnings.push(`${r.metadata.customer_asset_id}: ${e}`);
 
-		const snapshot: LiveSnapshot = { syncedAt: new Date(now).toISOString(), wells, leases, notLinked, warnings };
-		await mkdir(DIR, { recursive: true });
-		await writeFile(`${SNAPSHOT}.tmp`, JSON.stringify(snapshot));
-		await rename(`${SNAPSHOT}.tmp`, SNAPSHOT); // never leave a half-written snapshot
-		return { status: 'ok', snapshot };
+		current = { syncedAt: new Date(now).toISOString(), wells, leases, notLinked, warnings };
+		lastError = null;
+		await writeLocalCache(current);
+		return { status: 'ok', snapshot: current };
 	} catch (err) {
-		// The message is safe to show: AmplifiedError never contains the key or a raw payload.
-		const reason = err instanceof AmplifiedError ? err.message : err instanceof Error ? err.message : 'Sync failed.';
-		return { status: 'error', reason, snapshot: previous };
+		// Safe to show: AmplifiedError never contains the key or a raw payload.
+		lastError = err instanceof AmplifiedError ? err.message : 'The Amplified sync failed.';
+		return { status: 'error', reason: lastError, snapshot: current };
 	}
 }
 
-/** The last saved snapshot, without calling Amplified. */
-export async function readLiveSnapshot(): Promise<LiveState> {
+/** Local dev only: keep a copy where the private data folder already exists. */
+async function writeLocalCache(s: LiveSnapshot) {
+	if (!existsSync(CACHE_DIR)) return;
 	try {
-		return { status: 'ok', snapshot: JSON.parse(await readFile(SNAPSHOT, 'utf8')) as LiveSnapshot };
-	} catch (err) {
-		if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
-			return {
-				status: 'none',
-				reason: isAmplifiedConfigured() ? 'Not synced from Amplified yet.' : 'AMPLIFIED_API_KEY is not set in this environment.'
-			};
-		}
-		return { status: 'error', reason: 'The saved Amplified snapshot could not be read.', snapshot: null };
+		await writeFile(`${CACHE_FILE}.tmp`, JSON.stringify(s));
+		await rename(`${CACHE_FILE}.tmp`, CACHE_FILE);
+	} catch {
+		/* a cache miss just means one more pull next time */
 	}
+}
+
+async function readLocalCache(): Promise<LiveSnapshot | null> {
+	if (!existsSync(CACHE_FILE)) return null;
+	try {
+		return JSON.parse(await readFile(CACHE_FILE, 'utf8')) as LiveSnapshot;
+	} catch {
+		return null;
+	}
+}
+
+const isStale = (s: LiveSnapshot) => Date.now() - Date.parse(s.syncedAt) > LIVE_STALE_MS;
+
+/**
+ * What the page shows. With nothing in memory yet (first request after a deploy) it waits for
+ * one pull; with a stale copy it returns that at once and refreshes in the background.
+ */
+export async function getLiveState(): Promise<LiveState> {
+	current ??= await readLocalCache();
+	if (!current) return syncAmplified();
+	if (isStale(current)) void syncAmplified();
+	return lastError ? { status: 'error', reason: lastError, snapshot: current } : { status: 'ok', snapshot: current };
+}
+
+/** The current copy without calling Amplified. */
+export async function readLiveSnapshot(): Promise<LiveState> {
+	current ??= await readLocalCache();
+	if (current) return { status: 'ok', snapshot: current };
+	return {
+		status: 'none',
+		reason: isAmplifiedConfigured() ? 'Not synced from Amplified yet.' : 'AMPLIFIED_API_KEY is not set in this environment.'
+	};
 }

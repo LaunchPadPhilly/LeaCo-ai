@@ -71,14 +71,26 @@ No new ID is used twice.
 - Until the IDs are changed, the dashboard sync can use this worksheet as its lookup table and switch
   to exact matching once they are.
 
-## Live sync (built 2026-11-20)
+## The dashboard connector (2026-11-23)
 
-`pnpm run amplified:sync` (and the dashboard, every 15 minutes) pulls the current data for the **90
-confirmed wells**, all 11 leases (30 days of oil and produced water) and open tickets into
-`data/private/amplified/live.json`. The worksheet's `leaco_well` column says which of LeaCo's wells
-each row is; rows with a CONFIRM note are not linked, and the dashboard shows the reason on that
-well. A well whose device hasn't checked in for over 24 hours is flagged "status may be out of
-date" (8 of the shut-down wells at the first sync).
+Owner decision: **take all data from the Amplified API; fill a field from public records where we
+have it; report everything else as missing.**
+
+- `src/lib/server/leaco/amplifiedSync.ts` pulls **every** Amplified well (status, runtime, pressures,
+  last check-in, open tickets) and all 11 leases (60 days of oil and produced water). That's about
+  8 GET requests per run. The result is kept in server memory and refreshed every 15 minutes, so it
+  works in UAT and production containers. Locally it's also cached in `data/private/amplified/live.json`.
+- Wells are tied to public state records through `src/lib/leaco/reference/wells.json` (committed,
+  public fields only, built by `pnpm run reference:build`):
+  - 90 "confirmed" links;
+  - 12 "probable" (same lease and number, Amplified labels the kind differently);
+  - 1 "conflict" (asset 6851), left unlinked;
+  - MLMU 204 has no Amplified ID.
+- Amplified-only assets (6851, WHRB #30, Coop Fed Com 4 #2, the MLMU battery) are listed with
+  location "missing" and aren't drawn on the map.
+- **UAT needs `AMPLIFIED_API_KEY` in `web_secret_keys`** (`infra/environments/uat/variables.tf`) and a
+  `terraform apply` **before** the deploy. CI builds each new task definition from the latest
+  registered one, so the apply has to come first. Until then `/dashboard` on UAT says it isn't connected.
 
 ## Other open questions
 

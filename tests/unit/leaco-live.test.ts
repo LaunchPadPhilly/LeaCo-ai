@@ -31,13 +31,17 @@ describe('live helpers', () => {
 const SNAP = 'data/private/amplified/live.json';
 describe.skipIf(!existsSync(SNAP))(`saved Amplified snapshot (${SNAP})`, () => {
 	const s = existsSync(SNAP) ? (JSON.parse(readFileSync(SNAP, 'utf8')) as LiveSnapshot) : null;
-	it('links only confirmed wells, and says why the others are not linked', () => {
-		expect(Object.keys(s!.wells).length).toBeGreaterThan(80);
-		// The two cases still awaiting LeaCo: an ID/name conflict, and an injector Amplified labels as a well.
+	it('pulls every Amplified well, and links to state records only through reviewed links', () => {
+		const wells = Object.values(s!.wells);
+		expect(wells.length).toBeGreaterThan(100);
+		// The ID/name conflict stays unlinked: the Amplified asset is shown on its own, our WHRB-20 says why.
 		expect(s!.wells['WHRB-20']).toBeUndefined();
 		expect(s!.notLinked['WHRB-20']).toMatch(/#24/);
-		expect(s!.wells['EEU-18']).toBeUndefined();
-		expect(s!.notLinked['EEU-18']).toMatch(/injector/);
+		expect(s!.wells['AMP-W_H_Rhodes_B_Federal_NCT-1_24']?.link).toBeNull();
+		// An injector Amplified labels as a well: linked as "probable", with the reason kept.
+		expect(s!.wells['EEU-18']).toMatchObject({ link: 'probable', linkNote: expect.stringMatching(/injector/) });
+		// Every pulled well is either linked or marked Amplified-only.
+		for (const w of wells) expect(w.link === null ? w.key.startsWith('AMP-') : !w.key.startsWith('AMP-')).toBe(true);
 	});
 	it('stores missing values as null, never zero, and leaves out the unfinished day', () => {
 		for (const w of Object.values(s!.wells)) {

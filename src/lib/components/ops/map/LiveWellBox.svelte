@@ -18,6 +18,9 @@
 <section class="livebox" aria-labelledby="livebox-title">
 	<h3 id="livebox-title">Live from Amplified{syncedAt ? ` · ${agoText(syncedAt, now)}` : ''}</h3>
 	{#if well}
+		{#if well.link === 'probable'}
+			<p class="offline">Linked as probable, not confirmed: {well.linkNote ?? 'same lease and well number'}.</p>
+		{/if}
 		<p class="status">
 			Right now: <b style:color={statusColor(well.status)}>{well.status ?? 'No reading'}</b>
 		</p>
