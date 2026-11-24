@@ -76,7 +76,7 @@ promoted from one to the other.
 - `pnpm run test` — **not a test suite**: environment/DB diagnostic. Validates `DATABASE_URL`'s structure (shared rules with `scripts/fix-secret-database-url.sh`) before connecting.
 - `pnpm run db:deploy` — apply committed migrations. `db:migrate` is `prisma migrate dev`, only for authoring against a database you own. After schema edits: `db:format`, `db:validate`, `db:generate`.
 - `pnpm run mcp:dev` — standalone MCP server on port 3001, matching the deployed two-service shape.
-- `pnpm run documents:ingest [-- --dry-run | --force] [--verbose]` — incremental document sync (new/updated files only; folder structure recorded; vanished files marked removed). Deployed, it runs hourly via EventBridge Scheduler in UAT (`infra/modules/environment/ingest-schedule.tf`, never `--force`; Play 14 §L) or by hand as a one-off ECS task on the MCP image; runs never overlap (`ALREADY_RUNNING`). The `document_source_changes` MCP tool does the same diff read-only.
+- `pnpm run documents:ingest [-- --dry-run | --force] [--verbose]` — incremental sync of the Dropbox folder (Play 03b, ADR 0003) into the `Document*` tables: new and changed files by content hash, renames/moves update the path only, vanished files marked `REMOVED`. Reads PDF, DOCX, MSG (plus PDF/DOCX/KMZ/MSG attachments) and KMZ; scanned PDFs are `NO_TEXT`. Deployed, run it by hand as a one-off ECS task on the MCP image (`scripts/ingest-documents.ts`); no schedule exists yet. Runs never overlap (`ALREADY_RUNNING`, exit 3). The `document_source_changes` MCP tool does the same diff read-only. In Git Bash, run `scripts/dropbox-auth.sh` as-is (it sets `MSYS_NO_PATHCONV=1`).
 - `pnpm run template:check` — zero-hit gate for placeholders, stray identifiers and email addresses.
 - `./scripts/smoke-test.sh <base-url> [--skip-redirect] [--db-check <path>]` — the pipeline's promotion gate.
 
@@ -93,13 +93,11 @@ contract).
 - `src/lib/server/mcp/handler.ts` is the shared MCP protocol/auth implementation; it
   imports no domain code and reads env through `process.env` (never `$env`, which the
   standalone process cannot resolve). Tools are the list in `src/lib/server/mcp/tools.ts`.
-  A tool returns JSON (one text block) unless it returns `richToolResult(...)`, which
-  `document_visuals` uses to send images. Both entry points pass `mcpInstructions` to
-  `createMcpHandler`. The server instructions tell the client to cite the source under
-  each claim with a verbatim quote, and to ask for the topic and the cohorts/programs
-  (`chart_filter_options`, then a numbered list, then `chart_data`) before charting results.
-  Power BI and Qualtrics links are never ingested and are stripped at read time
-  (`src/lib/server/documents/links.ts`); every other embedded link is kept.
+  A tool returns JSON (one text block). Both entry points pass `mcpInstructions` (from
+  `tools.ts`) to `createMcpHandler`, which sends them to clients at connect time; today they
+  are the document citation rules (cite file, folder and page with a verbatim quote under
+  each claim). Document tools (`src/lib/server/documents/tools.ts`) require the
+  `documents:read` scope, which is never the default and must be granted per user.
   `src/routes/api/mcp/+server.ts` is a same-origin fallback; production-equivalent MCP runs
   from `src/mcp-server/index.ts` on port 3001 and serves only `/health` and `/api/mcp`.
   `Dockerfile.mcp` runs through `tsx` and must `COPY` every directory the tools import.

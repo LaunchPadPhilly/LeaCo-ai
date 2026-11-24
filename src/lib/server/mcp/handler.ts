@@ -52,7 +52,12 @@ export type McpHandler = {
 };
 
 /** Builds the two HTTP handlers for a given tool list. */
-export function createMcpHandler(tools: readonly McpToolDefinition[]): McpHandler {
+export type McpHandlerOptions = {
+	/** Server instructions sent to clients at initialize (e.g. citation rules). */
+	instructions?: string;
+};
+
+export function createMcpHandler(tools: readonly McpToolDefinition[], options: McpHandlerOptions = {}): McpHandler {
 	return {
 		async handleGet(request) {
 			const principal = await authenticate(request);
@@ -63,7 +68,7 @@ export function createMcpHandler(tools: readonly McpToolDefinition[]): McpHandle
 			const principal = await authenticate(request);
 			if (!principal) return unauthorized();
 
-			const server = createServer(principal, tools);
+			const server = createServer(principal, tools, options.instructions);
 			const transport = new WebStandardStreamableHTTPServerTransport({
 				sessionIdGenerator: undefined,
 				enableJsonResponse: true
@@ -81,11 +86,14 @@ function jsonResponse(body: unknown, init?: ResponseInit) {
 	});
 }
 
-function createServer(principal: Principal, tools: readonly McpToolDefinition[]) {
-	const server = new McpServer({
-		name: mcpServerName,
-		version: '0.1.0'
-	});
+function createServer(principal: Principal, tools: readonly McpToolDefinition[], instructions?: string) {
+	const server = new McpServer(
+		{
+			name: mcpServerName,
+			version: '0.1.0'
+		},
+		instructions ? { instructions } : undefined
+	);
 
 	// Every tool registers unconditionally, whatever the principal holds, so a client
 	// with insufficient scope sees the tool and gets a clear permission error when it

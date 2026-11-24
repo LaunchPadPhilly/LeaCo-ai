@@ -22,6 +22,7 @@
 		"dev:session": "tsx scripts/dev-session.ts",
 		"amplified:probe": "tsx scripts/amplified-probe.ts",
 		"amplified:sync": "tsx scripts/amplified-sync.ts",
+		"documents:ingest": "tsx scripts/ingest-documents.ts",
 		"reference:build": "tsx scripts/build-public-reference.ts",
 		"db:generate": "prisma generate",
 		"db:format": "prisma format",
@@ -48,13 +49,18 @@
 		"vitest": "^5.1.1"
 	},
 	"dependencies": {
+		"@kenjiuno/msgreader": "^1.29.0",
 		"@modelcontextprotocol/sdk": "^1.32.1",
 		"@prisma/adapter-pg": "^7.10.0",
 		"@prisma/client": "^7.10.0",
 		"d3": "^7.9.2",
+		"fast-xml-parser": "^5.12.1",
+		"fflate": "^0.8.3",
 		"jose": "^6.2.12",
+		"mammoth": "^1.13.0",
 		"pg": "^8.23.1",
 		"prisma": "^7.10.0",
+		"unpdf": "^2.2.2",
 		"zod": "^4.6.5"
 	},
 	"description": "LeaCo AI: SvelteKit + Prisma/PostgreSQL + read-only MCP server + Terraform ECS Fargate."
