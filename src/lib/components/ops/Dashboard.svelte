@@ -9,6 +9,7 @@
 	import { AREA_KEYS, PROPERTIES, PROPERTY_KEYS } from '$lib/leaco/ops/properties';
 	import { areaSummary, attention, headline } from '$lib/leaco/ops/summary';
 	import type { AreaKey, OpsData, PropertyKey } from '$lib/leaco/ops/types';
+	import type { DailyReport } from '$lib/leaco/dailyReport';
 	import AttentionList from './AttentionList.svelte';
 	import KpiStrip from './KpiStrip.svelte';
 	import PeriodPicker from './PeriodPicker.svelte';
@@ -18,7 +19,12 @@
 	import FeatureDetail from './map/FeatureDetail.svelte';
 	import OpsMap from './map/OpsMap.svelte';
 
-	let { ops: serverOps, live: initialLive }: { ops: OpsData; live: LiveState } = $props();
+	let {
+		ops: serverOps,
+		live: initialLive,
+		reports = [],
+		reportsNote = null
+	}: { ops: OpsData; live: LiveState; reports?: DailyReport[]; reportsNote?: string | null } = $props();
 	const amplifiedMode = $derived(serverOps.mode === 'amplified');
 
 	// ---------- live Amplified data: shown at once from the saved copy, refreshed in the background
@@ -61,7 +67,10 @@
 
 	// In Amplified mode the whole view is rebuilt from each live refresh, so every number stays
 	// current; in report mode it's the server's report data and the live panel sits on top.
-	const ops = $derived<OpsData>(serverOps.mode === 'amplified' && liveSnap ? opsFromAmplified(liveSnap) : serverOps);
+	const ops = $derived<OpsData>(serverOps.mode === 'amplified' && liveSnap ? opsFromAmplified(liveSnap, reports) : serverOps);
+	/** Amplified mode with at least one Dropbox daily report inside the shown days. */
+	const reportDays = $derived(amplifiedMode ? ops.dates.filter((d, i) => ops.totals[i].water !== null || ops.totals[i].wellsRunning || ops.totals[i].injectorsTaking) : []);
+	const hasReports = $derived(reportDays.length > 0);
 	const notOnMap = $derived(ops.assets.filter((a) => a.lat === null || a.lon === null));
 	const notInAmplified = $derived(amplifiedMode && liveSnap ? referenceNotInAmplified(liveSnap) : []);
 
@@ -139,10 +148,23 @@
 					Everything on this page comes from the <b>Amplified API</b>, refreshed every 15 minutes. Well locations, API
 					numbers and operators come from <b>NM OCD state records</b> where a well is linked to one.
 				</p>
-				<p>
-					<b>Missing here</b>, because Amplified doesn’t provide it: water injected and injector volumes (LeaCo’s XRI
-					water), day-by-day well status (Amplified gives the current status only), and daily-report notes.
-				</p>
+				{#if hasReports}
+					<p>
+						<b>Water injected, wells running and injectors taking water</b> come from the <b>LeaCo Daily Reports</b> in
+						Dropbox, for the {reportDays.length} day{reportDays.length > 1 ? 's' : ''} with a report ({shortDay(reportDays[0])}{reportDays.length > 1 ? ` to ${shortDay(reportDays[reportDays.length - 1])}` : ''}).
+						Days without a report show those as missing.
+					</p>
+					<p>
+						<b>Missing here</b>: per-injector volumes, day-by-day status of each well, and daily-report notes.
+					</p>
+				{:else}
+					<p>
+						<b>Missing here</b>, because Amplified doesn’t provide it: water injected and injector volumes (LeaCo’s XRI
+						water), day-by-day well status (Amplified gives the current status only), and daily-report notes.
+						{reports.length ? 'The synced daily reports don’t cover these days.' : 'No daily reports have been synced from Dropbox yet.'}
+					</p>
+				{/if}
+				{#if reportsNote}<p class="ops-muted">{reportsNote}</p>{/if}
 				{#if notOnMap.length}
 					<details>
 						<summary>{notOnMap.length} Amplified well{notOnMap.length > 1 ? 's have' : ' has'} no location and {notOnMap.length > 1 ? 'aren’t' : 'isn’t'} on the map</summary>
@@ -183,10 +205,16 @@
 				<div class="trends">
 					<TrendChart title="Oil produced" subtitle="barrels per day, all leases" values={ops.totals.map((t) => t.oil)} {dates} {period} color="var(--ops-oil)" format={(v) => fmt(v, 1)} onpick={pickDay} />
 					<TrendChart title="Produced water" subtitle="barrels per day, LeaCo’s own produced water" values={ops.totals.map((t) => t.producedWater ?? null)} {dates} {period} color="#5B7C99" format={(v) => fmt(v)} onpick={pickDay} />
-					<div class="missing-card">
-						<b>Water injected · Wells running · Injectors taking water</b>
-						<p>Missing: Amplified has no injection data and no day-by-day well status. Current well status is in the live panel above.</p>
-					</div>
+					{#if hasReports}
+						<TrendChart title="Water injected" subtitle="barrels per day (daily reports)" values={ops.totals.map((t) => t.water)} {dates} {period} color="var(--ops-water)" format={(v) => fmt(v)} onpick={pickDay} />
+						<TrendChart title="Wells running" subtitle="of {wellTotal} producing wells (report header)" values={wells} {dates} {period} kind="line" yMax={wellTotal} color="#2E8B3E" format={(v) => fmt(v)} onpick={pickDay} />
+						<TrendChart title="Injectors taking water" subtitle="of {injTotal} injectors (report header)" values={injectors} {dates} {period} kind="line" yMax={injTotal} color="var(--ops-water)" format={(v) => fmt(v)} onpick={pickDay} />
+					{:else}
+						<div class="missing-card">
+							<b>Water injected · Wells running · Injectors taking water</b>
+							<p>Missing: Amplified has no injection data and no day-by-day well status, and no daily reports have been synced for these days. Current well status is in the live panel above.</p>
+						</div>
+					{/if}
 				</div>
 			{:else}
 			<div class="trends">

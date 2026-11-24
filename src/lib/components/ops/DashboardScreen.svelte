@@ -14,7 +14,7 @@
 </svelte:head>
 
 {#if dashboard.state === 'ok' && dashboard.ops}
-	<Dashboard ops={dashboard.ops} live={dashboard.live} />
+	<Dashboard ops={dashboard.ops} live={dashboard.live} reports={dashboard.reports} reportsNote={dashboard.reportsNote} />
 {:else}
 	<div class="ops ops-empty">
 		<div class="empty-card">
