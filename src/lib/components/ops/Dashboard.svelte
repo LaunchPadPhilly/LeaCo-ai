@@ -27,11 +27,12 @@
 	let now = $state(Date.now());
 	const liveSnap = $derived<LiveSnapshot | null>(live.status === 'ok' ? live.snapshot : live.status === 'error' ? live.snapshot : null);
 
-	async function refreshLive() {
+	/** POST pulls from Amplified now (refresh button, or a stale copy on load); GET only reads the server's copy. */
+	async function refreshLive(pull = true) {
 		if (refreshing) return;
 		refreshing = true;
 		try {
-			const res = await fetch('/dashboard/amplified', { method: 'POST' });
+			const res = await fetch('/dashboard/amplified', { method: pull ? 'POST' : 'GET' });
 			if (!res.ok) throw new Error(`HTTP ${res.status}`);
 			live = (await res.json()) as LiveState;
 		} catch {
@@ -47,9 +48,11 @@
 		const keyMissing = live.status === 'none' && /not set/.test(live.reason);
 		if (stale && !keyMissing) void refreshLive();
 		const tick = setInterval(() => (now = Date.now()), 30_000);
+		// The server pulls from Amplified every 15 min on its own timer; an open tab just picks up
+		// that copy each minute, so tabs add no Amplified calls.
 		const resync = setInterval(() => {
-			if (!keyMissing) void refreshLive();
-		}, LIVE_STALE_MS);
+			if (!keyMissing) void refreshLive(false);
+		}, 60_000);
 		return () => {
 			clearInterval(tick);
 			clearInterval(resync);
@@ -127,7 +130,7 @@
 	</header>
 
 	<main class="body">
-		<LivePanel {live} {refreshing} {now} nameOf={(key) => ops.assets.find((a) => a.key === key)?.name ?? key} onrefresh={refreshLive} onpick={(key) => pickAsset(key, true)} />
+		<LivePanel {live} {refreshing} {now} nameOf={(key) => ops.assets.find((a) => a.key === key)?.name ?? key} onrefresh={() => refreshLive()} onpick={(key) => pickAsset(key, true)} />
 
 		{#if amplifiedMode}
 			<section class="source" aria-labelledby="source-title">
