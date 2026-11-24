@@ -1,5 +1,7 @@
+import type { DailyReport } from '../dailyReport';
 import layers from '../reference/layers.json' with { type: 'json' };
 import reference from '../reference/wells.json' with { type: 'json' };
+import { reconcile } from '../rules';
 import { leaseArea, type LiveSnapshot } from './live';
 import type { AreaDay, AreaKey, DayTotal, OpsAsset, OpsData, Polygon, Ring, LonLat } from './types';
 
@@ -11,7 +13,10 @@ import type { AreaDay, AreaKey, DayTotal, OpsAsset, OpsData, Polygon, Ring, LonL
  *
  * - Dates are the Amplified lease ledger's complete UTC days (last 30).
  * - Oil and produced water come from the ledger. Water injected, injector volumes and
- *   day-by-day well status are not in Amplified: always null here.
+ *   day-by-day well status are not in Amplified.
+ * - Where a LeaCo Daily Report exists for a day (synced from Dropbox), it fills that day's
+ *   water injected (total and by area), wells running and injectors taking water, from the
+ *   report header. Days without a report keep those null.
  * - Each well's status is Amplified's current reading (`liveStatus`).
  * - Location, API number, operator and land type come from NM OCD records, through the
  *   reviewed link in reference/wells.json. Unlinked wells have none: listed, not mapped.
@@ -25,10 +30,31 @@ const polygons = (g: Geometry): Polygon[] => (g.type === 'Polygon' ? [g.coordina
 /** Amplified lease names use spaces ("Myers Langlie Mattix Unit"); the area rule reads either form. */
 const areaOfLease = (leaseName: string | null): AreaKey => leaseArea((leaseName ?? '').replace(/\s+/g, '_'));
 
-export function opsFromAmplified(s: LiveSnapshot): OpsData {
+/** Report lease rows → area. A lease name that matches none is left out of the area split. */
+function areaOfReportLease(name: string): AreaKey | null {
+	if (/mlmu|myers|langlie/i.test(name)) return 'mlmu';
+	if (/eumont|\beeu\b/i.test(name)) return 'eeu';
+	if (/rhodes|wills|yates/i.test(name)) return 'rw';
+	return null;
+}
+
+function reportAreaWater(r: DailyReport | undefined, area: AreaKey): number | null {
+	if (!r) return null;
+	let sum = 0;
+	let n = 0;
+	for (const [name, row] of Object.entries(r.leases)) {
+		if (areaOfReportLease(name) !== area || row.water === null) continue;
+		sum += row.water;
+		n++;
+	}
+	return n ? sum : null;
+}
+
+export function opsFromAmplified(s: LiveSnapshot, reports: DailyReport[] = []): OpsData {
 	const allDays = [...new Set(s.leases.flatMap((l) => l.days.map((d) => d.day)))].sort();
 	const shown = allDays.slice(-SHOWN_DAYS);
 	const dates = shown.length ? shown : [s.syncedAt.slice(0, 10)];
+	const reportFor = new Map(reports.map((r) => [r.date, r]));
 
 	const sumFor = (day: string, field: 'oil' | 'water', area?: AreaKey): number | null => {
 		let sum = 0;
@@ -56,18 +82,18 @@ export function opsFromAmplified(s: LiveSnapshot): OpsData {
 	};
 
 	const totals: DayTotal[] = dates.map((day) => ({
-		water: null,
+		water: reportFor.get(day)?.water ?? null,
 		oil: shown.length ? sumFor(day, 'oil') : null,
 		producedWater: shown.length ? sumFor(day, 'water') : null,
-		injectorsTaking: null,
-		wellsRunning: null
+		injectorsTaking: reportFor.get(day)?.inj_taking ?? null,
+		wellsRunning: reportFor.get(day)?.wells_running ?? null
 	}));
 	const areas = Object.fromEntries(
 		AREAS.map((a) => [
 			a,
 			dates.map(
 				(day): AreaDay => ({
-					water: null,
+					water: reportAreaWater(reportFor.get(day), a),
 					oil: shown.length ? sumFor(day, 'oil', a) : null,
 					oil30: shown.length ? oil30(day, a) : null,
 					producedWater: shown.length ? sumFor(day, 'water', a) : null
@@ -120,8 +146,10 @@ export function opsFromAmplified(s: LiveSnapshot): OpsData {
 		texas: polygons(layers.texas as Geometry),
 		routes: layers.routes.map((r) => ({ from: r.a, to: r.b, miles: r.mi, via: r.via as [string, number][], lines: r.g as LonLat[][] })),
 		roadGaps: layers.roadGaps.map((g) => ({ area: g.a, miles: g.mi, line: g.g as LonLat[] })),
-		reconciliation: {},
-		source: 'Amplified Customer API (live) and NM OCD state well records (locations)'
+		reconciliation: Object.fromEntries(dates.filter((d) => reportFor.has(d)).map((d) => [d, reconcile(reportFor.get(d)!).status])),
+		source: dates.some((d) => reportFor.has(d))
+			? 'Amplified Customer API (live), LeaCo Daily Reports from Dropbox (injection and header counts), and NM OCD state well records (locations)'
+			: 'Amplified Customer API (live) and NM OCD state well records (locations)'
 	};
 }
 

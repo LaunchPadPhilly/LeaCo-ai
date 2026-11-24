@@ -76,6 +76,13 @@ export type DashboardLoad = {
 	ops: import('./types').OpsData | null;
 	reason: string | null;
 	live: LiveState;
+	/**
+	 * Amplified mode only: the daily reports read from the Dropbox document store, which fill
+	 * water injected, wells running and injectors taking water. Empty when none are synced.
+	 */
+	reports: import('../dailyReport').DailyReport[];
+	/** Why some or all report files weren't used, for the page to say so. */
+	reportsNote: string | null;
 };
 
 export const LIVE_STALE_MS = 15 * 60_000;

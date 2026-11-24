@@ -33,8 +33,8 @@
 	const role = $derived.by(() => {
 		if (!summary) return null;
 		if (property.key === 'mlmu')
-			return statusNow
-				? `Water hub (water injected is missing: not in Amplified) · ${share(summary.oil30Share)} of 30-day oil`
+			return statusNow && summary.waterShare === null
+				? `Water hub (water injected is missing: no daily report for this period) · ${share(summary.oil30Share)} of 30-day oil`
 				: `Water hub: took ${share(summary.waterShare)} of water injected · ${share(summary.oil30Share)} of 30-day oil`;
 		if (property.key === 'eeu') return `Oil producer: ${share(summary.oil30Share)} of 30-day oil`;
 		return `Small oil leases: ${share(summary.oil30Share)} of 30-day oil. XRI water enters here.`;
@@ -109,7 +109,7 @@
 			/>
 			<p class="barlbl">
 				{#if statusNow}
-					<span>Injectors: water injected is missing (Amplified has no injection data)</span>
+					<span>Injectors: volume per injector is missing (not in Amplified or the parsed reports)</span>
 				{:else}
 				<span>Injectors: <b>{i.take}</b> took water{single ? '' : ' in period'}{#if i.stuck}{' · '}<b class="bad">{i.stuck} stuck</b>{/if}{#if i.nodata}{' · '}{i.nodata} no reading{/if}</span>
 				{/if}
