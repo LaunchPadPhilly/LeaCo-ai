@@ -64,6 +64,11 @@ module "environment" {
   web_secret_keys = var.web_secret_keys
   mcp_secret_keys = var.mcp_secret_keys
 
+  # Hourly incremental document sync (Play 14 section L). The alert email is never
+  # committed: export TF_VAR_ingest_alert_email before planning, or alarms are removed.
+  ingest_schedule_enabled = var.ingest_schedule_enabled
+  ingest_alert_email      = var.ingest_alert_email
+
   create_rds                = true
   db_identifier             = "${var.name_prefix}-db"
   db_engine_version         = var.db_engine_version

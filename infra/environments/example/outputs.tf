@@ -54,3 +54,11 @@ output "db_master_user_secret_arn" {
   description = "RDS-managed master credential — source for the app secret's DATABASE_URL value. Build the string with scripts/fix-secret-database-url.sh; the endpoint output already includes the port."
   value       = module.environment.db_master_user_secret_arn
 }
+
+output "ingest_schedule_name" {
+  value = module.environment.ingest_schedule_name
+}
+
+output "ingest_dlq_url" {
+  value = module.environment.ingest_dlq_url
+}

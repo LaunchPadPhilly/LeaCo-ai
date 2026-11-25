@@ -269,3 +269,22 @@ variable "db_parameter_group_name" {
   default = null
 }
 
+
+# ------------------------------------------------------- scheduled ingestion
+variable "ingest_schedule_enabled" {
+  description = "Run scripts/ingest-documents.ts hourly in the mcp family via EventBridge Scheduler (Play 14 section L). false removes the schedule, its role, queue, metrics and alarms."
+  type        = bool
+  default     = false
+}
+
+variable "ingest_schedule_expression" {
+  description = "EventBridge Scheduler expression for the document sync, in UTC."
+  type        = string
+  default     = "rate(1 hour)"
+}
+
+variable "ingest_alert_email" {
+  description = "Email for the sync alarms (SNS subscription; AWS sends a confirmation first). Never committed: export TF_VAR_ingest_alert_email. null = no topic, no alarms."
+  type        = string
+  default     = null
+}

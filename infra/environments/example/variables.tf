@@ -85,3 +85,15 @@ variable "image_uris" {
   type        = map(string)
   default     = {}
 }
+
+variable "ingest_schedule_enabled" {
+  description = "Hourly Dropbox document sync via EventBridge Scheduler (Play 14 section L)."
+  type        = bool
+  default     = false
+}
+
+variable "ingest_alert_email" {
+  description = "Where sync alarms are emailed. Never commit it: export TF_VAR_ingest_alert_email. Unset = no alarms."
+  type        = string
+  default     = null
+}
