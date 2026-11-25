@@ -136,9 +136,10 @@ counts what is directly inside it. It prints no file names.
 - If it prints `team_space=yes`, also copy the printed `DROPBOX_PATH_ROOT_NAMESPACE_ID`
   line into `.env.local`. The connector must send it, or team folders list as empty.
 
-### 6. UAT secret (only once the Dropbox connector code has merged)
+### 6. UAT secret, scope and first sync (only once the Dropbox connector code has merged)
 
-Do not do this step before the connector ships. Order matters: put the keys **into the
+The connector is `src/lib/server/dropbox` and `src/lib/server/documents` (ADR 0003). Do not
+do this step before it has merged and deployed. Order matters: put the keys **into the
 secret first**, then add them to `mcp_secret_keys` in `infra/environments/uat/variables.tf`.
 If ECS is told to inject a key the secret does not hold, the `mcp` task fails to start.
 
@@ -150,21 +151,34 @@ jq --arg k "$(get DROPBOX_APP_KEY)" --arg s "$(get DROPBOX_APP_SECRET)" \
    --arg r "$(get DROPBOX_REFRESH_TOKEN)" --arg f "$(get DROPBOX_ROOT_FOLDER_ID)" \
    --arg n "$(get DROPBOX_PATH_ROOT_NAMESPACE_ID)" \
    '.DROPBOX_APP_KEY=$k | .DROPBOX_APP_SECRET=$s | .DROPBOX_REFRESH_TOKEN=$r
-    | .DROPBOX_ROOT_FOLDER_ID=$f | .DROPBOX_PATH_ROOT_NAMESPACE_ID=$n
-    | .DOCUMENT_SOURCE_KIND="dropbox"' "$F" > "$F.tmp" && mv "$F.tmp" "$F"
-jq -r 'to_entries[] | select(.key|startswith("DROPBOX_") or .=="DOCUMENT_SOURCE_KIND") | "\(.key) len=\(.value|length)"' "$F"
+    | .DROPBOX_ROOT_FOLDER_ID=$f | .DROPBOX_PATH_ROOT_NAMESPACE_ID=$n' "$F" > "$F.tmp" && mv "$F.tmp" "$F"
+jq -r 'to_entries[] | select(.key|startswith("DROPBOX_")) | "\(.key) len=\(.value|length)"' "$F"
+jq -r '"MCP_OAUTH_SCOPES=\(.MCP_OAUTH_SCOPES // "(unset: all scopes advertised)")"' "$F"
 WINPATH="$(cygpath -m "$F" 2>/dev/null || echo "$F")"
 aws secretsmanager put-secret-value --secret-id uat/<slug>/app --secret-string "file://$WINPATH" --query VersionStages && rm -f "$F"
 ```
 
 `DROPBOX_PATH_ROOT_NAMESPACE_ID` is an empty string when the folder is not in a team space.
-That is valid; the connector treats empty as "no header". Also update `MCP_OAUTH_SCOPES` to
-include `documents:read` (ADR 0001 §8 explains why).
+That is valid; the connector treats empty as "no header". If `MCP_OAUTH_SCOPES` is set,
+it must include `documents:read`, or OAuth clients cannot request the documents scope (ADR
+0003 §6). `DROPBOX_ROOT_PATH` stays in `.env.local` only; the connector uses the folder id.
 
-**EVIDENCE 03b.6** — paste the `len=` lines and the `VersionStages` output.
-**Accept when:** all six keys are present; `DROPBOX_APP_KEY`, `DROPBOX_APP_SECRET`,
-`DROPBOX_REFRESH_TOKEN` and `DROPBOX_ROOT_FOLDER_ID` have non-zero length;
-`DOCUMENT_SOURCE_KIND len=7`; `["AWSCURRENT"]`.
+Then add the five `DROPBOX_*` keys to `mcp_secret_keys`, `terraform plan` and `apply` (the
+`mcp` task definition is replaced; record the decision), and redeploy `mcp`.
+
+Run the first sync as a one-off task on the `mcp` family (same shape as Play 14), then grant
+`documents:read` to the users who should see the documents (`/admin?screen=users`):
+
+```bash
+run_task <slug>-uat-mcp '{"containerOverrides":[{"name":"mcp","command":["node_modules/.bin/tsx","scripts/ingest-documents.ts"]}]}'
+```
+
+**EVIDENCE 03b.6** — paste the `len=` lines, the `MCP_OAUTH_SCOPES=` line, the
+`VersionStages` output, and the sync task's last log line.
+**Accept when:** all five `DROPBOX_*` keys are present; `DROPBOX_APP_KEY`,
+`DROPBOX_APP_SECRET`, `DROPBOX_REFRESH_TOKEN` and `DROPBOX_ROOT_FOLDER_ID` have non-zero
+length; `MCP_OAUTH_SCOPES` is unset or contains `documents:read`; `["AWSCURRENT"]`; the
+sync log ends `INGEST_OK` with `failed=0` (or each failure is explained).
 
 ## Success criteria
 
@@ -178,6 +192,7 @@ include `documents:read` (ADR 0001 §8 explains why).
 |---|---|
 | Dedicated account cannot accept or add the shared folder ("not enough space") | On non-team plans a shared folder counts against **every member's** quota, and a free Basic account has 2 GB. Upgrade the dedicated account, or (Business/Teams) have the admin add it as a team member. Check the folder size before step 3. |
 | Dedicated account was created with the developer's email | Ownership must sit with the client, so they can revoke it after offboarding. Change the account email to a client-controlled address and hand over the password and 2-step backup codes. |
+| `folder=not_found` with a jq "Invalid numeric literal" error, in Git Bash | Git Bash rewrote `/LeaCo …` into `C:/Program Files/Git/LeaCo …` before it reached `jq.exe`. The script now sets `MSYS_NO_PATHCONV=1` itself; on an older copy, run it as `MSYS_NO_PATHCONV=1 ./scripts/dropbox-auth.sh verify`. |
 | `invalid_grant` at step 4 | The code expired, was used already, or was issued for a different app key. Run `authorize` again and paste the code promptly. |
 | `invalid_client` at step 4 or 5 | Wrong app key or secret in `.env.local` (a stray quote, space or Windows `\r`). Re-copy from the app's Settings tab. |
 | Token scopes missing `files.content.read` | Permissions were changed after the token was issued. Submit permissions, then repeat step 4. |

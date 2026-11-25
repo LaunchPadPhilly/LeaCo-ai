@@ -25,7 +25,8 @@ import reference from '../../leaco/reference/wells.json' with { type: 'json' };
  * differently). The one conflicting asset is shown on its own, unlinked. Nothing is guessed.
  *
  * Locally, where data/private/ exists, the snapshot is also cached there so a dev-server
- * restart doesn't need a fresh pull. Deployed, it lives in memory and refreshes every 15 min.
+ * restart doesn't need a fresh pull. Deployed, it lives in memory and a server timer
+ * (startAmplifiedSchedule, started from hooks.server.ts) refreshes it every 15 min.
  */
 const CACHE_DIR = 'data/private/amplified';
 const CACHE_FILE = `${CACHE_DIR}/live.json`;
@@ -187,6 +188,23 @@ async function readLocalCache(): Promise<LiveSnapshot | null> {
 }
 
 const isStale = (s: LiveSnapshot) => Date.now() - Date.parse(s.syncedAt) > LIVE_STALE_MS;
+
+let schedule: ReturnType<typeof setInterval> | null = null;
+
+/**
+ * Keeps the copy fresh on a fixed 15-min clock whether or not anyone has the page open, so
+ * the first viewer never waits and the data is at most 15 min old. One timer per server
+ * process; it never keeps the process alive on its own. A failed pull keeps the last copy.
+ */
+export function startAmplifiedSchedule(): void {
+	if (schedule || !isAmplifiedConfigured()) return;
+	void (async () => {
+		current ??= await readLocalCache();
+		if (!current || isStale(current)) await syncAmplified();
+	})();
+	schedule = setInterval(() => void syncAmplified(), LIVE_STALE_MS);
+	schedule.unref();
+}
 
 /**
  * What the page shows. With nothing in memory yet (first request after a deploy) it waits for

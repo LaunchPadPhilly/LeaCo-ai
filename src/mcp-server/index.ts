@@ -2,10 +2,10 @@ import './load-env.ts';
 
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { createMcpHandler } from '$lib/server/mcp/handler';
-import { mcpTools } from '$lib/server/mcp/tools';
+import { mcpInstructions, mcpTools } from '$lib/server/mcp/tools';
 import { mcpServerName } from '$lib/appConfig';
 
-const mcp = createMcpHandler(mcpTools);
+const mcp = createMcpHandler(mcpTools, { instructions: mcpInstructions });
 
 const port = Number(process.env.PORT ?? 3001);
 const host = process.env.HOST ?? '0.0.0.0';

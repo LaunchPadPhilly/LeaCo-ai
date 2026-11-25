@@ -242,6 +242,7 @@ enum RoleName {
 enum McpScope {
   DATA_READ
   REPORTS_READ
+  DOCUMENTS_READ
 }
 
 enum McpAuthorizationRequestStatus {
@@ -250,4 +251,120 @@ enum McpAuthorizationRequestStatus {
   GRANTED
   DENIED
   EXPIRED
+}
+
+// ---------------------------------------------------------------------------------------
+// Documents (docs/decisions/0003-dropbox-document-source.md). Written only by the ingest
+// script (`pnpm run documents:ingest`); MCP tools read them. One row per source file, plus
+// one row per readable email attachment (parentId set).
+// ---------------------------------------------------------------------------------------
+
+enum DocumentKind {
+  PDF
+  DOCX
+  MSG
+  KMZ
+  OTHER
+}
+
+enum DocumentStatus {
+  ACTIVE
+  REMOVED
+}
+
+/// Whether text could be read from the file. NO_TEXT is a PDF with no text layer (scanned;
+/// needs OCR). UNSUPPORTED is a file type we do not read. FAILED keeps the reason in
+/// `extractionNote` and is retried on the next run only if the file changes or with --force.
+enum ExtractionStatus {
+  OK
+  NO_TEXT
+  UNSUPPORTED
+  FAILED
+}
+
+enum DocumentIngestStatus {
+  RUNNING
+  SUCCEEDED
+  FAILED
+}
+
+model Document {
+  id             String           @id @default(cuid())
+  source         String           @default("dropbox")
+  /// Dropbox file id (`id:...`). Attachments use `<parent file id>#<n>`.
+  sourceFileId   String
+  parentId       String?
+  parent         Document?        @relation("DocumentAttachments", fields: [parentId], references: [id], onDelete: Cascade)
+  attachments    Document[]       @relation("DocumentAttachments")
+  /// Path relative to the configured root folder, e.g. `Daily Reports/2026-11-20.pdf`.
+  path           String
+  /// Folder part of `path` ("" for the root folder).
+  folder         String
+  name           String
+  kind           DocumentKind
+  sizeBytes      Int?
+  /// Dropbox content_hash; a change means the file content changed.
+  contentHash    String?
+  modifiedAt     DateTime?
+  status         DocumentStatus   @default(ACTIVE)
+  extraction     ExtractionStatus
+  extractionNote String?
+  pageCount      Int              @default(0)
+  /// Email headers for MSG files: { subject, from, to, cc, sentAt }.
+  meta           Json?
+  firstSeenAt    DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  removedAt      DateTime?
+  pages          DocumentPage[]
+  places         DocumentPlace[]
+
+  @@unique([source, sourceFileId])
+  @@index([status, folder])
+  @@index([parentId])
+}
+
+/// Text of one page (PDF) or one section (other kinds are a single page 1).
+model DocumentPage {
+  id           String                   @id @default(cuid())
+  documentId   String
+  document     Document                 @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  pageNumber   Int
+  text         String
+  /// Generated column (see migration): to_tsvector('english', text). Never written directly.
+  searchVector Unsupported("tsvector")?
+
+  @@unique([documentId, pageNumber])
+}
+
+/// One placemark from a KMZ/KML file.
+model DocumentPlace {
+  id           String   @id @default(cuid())
+  documentId   String
+  document     Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  name         String?
+  description  String?
+  /// KML folder path inside the file, e.g. `Wells/Injectors`.
+  kmlFolder    String?
+  geometryType String
+  /// Representative point: the point itself, or the first vertex of a line/polygon.
+  latitude     Float
+  longitude    Float
+  /// Every vertex as [lon, lat] pairs, for lines and polygons.
+  coordinates  Json?
+
+  @@index([documentId])
+}
+
+model DocumentIngestRun {
+  id         String               @id @default(cuid())
+  startedAt  DateTime             @default(now())
+  finishedAt DateTime?
+  status     DocumentIngestStatus @default(RUNNING)
+  force      Boolean              @default(false)
+  /// { added, updated, moved, removed, unchanged, failed, attachments }
+  counts     Json?
+  /// Short, safe failure reason (no file contents, no credentials).
+  error      String?
+
+  @@index([status, startedAt])
 }
