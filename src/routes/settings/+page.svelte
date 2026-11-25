@@ -5,6 +5,7 @@
 	import { pressable } from '$lib/actions/pressable.svelte';
 	import { reducedMotion, screenEnter, screenExit, DURATION, EASE } from '$lib/motion';
 	import { appConfig, storageKeyPrefix } from '$lib/appConfig';
+	import { BASEMAP_STORAGE_SUFFIX, DEFAULT_BASEMAP, parseBasemap, type BasemapId } from '$lib/leaco/ops/basemap';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -31,6 +32,34 @@
 		{ key: 'reduced', label: 'Reduced' },
 		{ key: 'full', label: 'Full' }
 	] as const;
+
+	// Background map for the LeaCo map: Topo unless changed here (DESIGN.md; owner decision
+	// 2026-11-25). The map reads the same key.
+	const BASEMAP_KEY = `${storageKeyPrefix}${BASEMAP_STORAGE_SUFFIX}`;
+	const BASEMAP_OPTIONS = [
+		{ key: 'topo', label: 'Topo' },
+		{ key: 'aerial', label: 'Aerial photo' },
+		{ key: 'none', label: 'None' }
+	] as const;
+	let basemap = $state<BasemapId>(DEFAULT_BASEMAP);
+
+	$effect(() => {
+		try {
+			basemap = parseBasemap(localStorage.getItem(BASEMAP_KEY)) ?? DEFAULT_BASEMAP;
+		} catch {
+			// stay on Topo
+		}
+	});
+
+	function setBasemap(next: string) {
+		basemap = parseBasemap(next) ?? DEFAULT_BASEMAP;
+		try {
+			if (basemap === DEFAULT_BASEMAP) localStorage.removeItem(BASEMAP_KEY);
+			else localStorage.setItem(BASEMAP_KEY, basemap);
+		} catch {
+			// localStorage unavailable — the choice just won't persist across reloads.
+		}
+	}
 
 	// Read saved preferences (if any) so the pickers reflect what app.html already
 	// applied before first paint — fall back to the neutral default when nothing's saved.
@@ -191,6 +220,21 @@
 			<span class="pref-label">Density</span>
 			<TabBar screens={DENSITY_OPTIONS} active={density} onchange={setDensity} />
 		</div>
+	</section>
+
+	<section class="card">
+		<div class="card__title"><h2>Map</h2></div>
+		<p class="muted">The background under LeaCo’s wells and land on this device. Topo is the default.</p>
+
+		<div class="pref-row">
+			<span class="pref-label">Background</span>
+			<TabBar screens={BASEMAP_OPTIONS} active={basemap} onchange={setBasemap} />
+		</div>
+		<p class="muted">
+			{basemap === 'none'
+				? 'Plain background: only LeaCo and public-record layers.'
+				: 'USGS The National Map · free U.S. government data · doesn’t show most lease roads accurately.'}
+		</p>
 	</section>
 
 	<section class="card">

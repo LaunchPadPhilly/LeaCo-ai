@@ -1,25 +1,37 @@
 /*
- * "Field sheet" theme for the /dashboard operations view (docs/leaco/DASHBOARD-REDESIGN.md §1).
- * Every rule is scoped under .ops so it can't affect the rest of the app, and the app theme's
- * element styles (h1, p, button, .card…) are reset inside it.
+ * Direction A ("Overview") theme for the LeaCo operations screens. Values and roles are in
+ * DESIGN.md → Color. Every rule is scoped under .ops so it can't affect the rest of the app,
+ * and the app theme's element styles (h1, p, button, .card…) are reset inside it.
  */
 .ops {
-	--ops-bg: #ece9e1;
+	--ops-bg: #f4f3ef;
 	--ops-panel: #ffffff;
-	--ops-sunken: #f5f3ee;
+	--ops-sunken: #faf9f6;
 	--ops-ink: #1b2127;
-	--ops-muted: #5f666d;
-	--ops-line: #dedad1;
-	--ops-accent: #0e6f8e;
-	--ops-accent-soft: #e2f0f4;
-	--ops-danger: #c8322b;
-	--ops-danger-soft: #fbeceb;
-	--ops-good: #2e8b3e;
-	--ops-water: #1f6fd1;
-	--ops-oil: #a65a0a;
-	--ops-radius: 10px;
+	--ops-ink-2: #3d454d;
+	--ops-muted: #59626b;
+	--ops-line: #ddd9cf;
+	--ops-divider: #ece9e1;
+	--ops-accent: #0b6a87;
+	--ops-accent-hover: #084d63;
+	--ops-accent-soft: #e6f0f3;
+	--ops-danger: #b42318;
+	--ops-danger-ink: #8f1d13;
+	--ops-danger-soft: #fbe9e7;
+	--ops-good: #23733a;
+	--ops-good-soft: #e4f1e7;
+	--ops-warn: #8a5a00;
+	--ops-warn-fill: #d99a1e;
+	--ops-warn-soft: #fff3d6;
+	--ops-offline: #6b7280;
+	--ops-water: #1f5fbf;
+	--ops-oil: #7a5a1e;
+	--ops-hatch: repeating-linear-gradient(45deg, #e5e7eb 0 3px, #ffffff 3px 6px);
+	--ops-radius: 12px;
 	--ops-shadow: 0 1px 2px rgb(27 33 39 / 6%), 0 4px 14px rgb(27 33 39 / 8%);
+	--ops-shadow-float: 0 8px 24px rgb(27 33 39 / 16%);
 	--ops-font: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--ops-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
 	min-height: 100vh;
 	color: var(--ops-ink);
@@ -82,6 +94,11 @@
 
 .ops .ops-muted {
 	color: var(--ops-muted);
+}
+
+.ops .ops-num {
+	font-family: var(--ops-mono);
+	font-variant-numeric: tabular-nums;
 }
 
 .ops .ops-eyebrow {

@@ -15,22 +15,22 @@ test('home page shows the dashboard under the app header, without console errors
 	expect(page.url(), 'redirected to sign-in: run `pnpm run dev:session` first').not.toContain('/api/auth/google');
 	// The dashboard is the signed-in home page, under the normal app header.
 	await expect(page.locator('header.site-header')).toBeVisible();
-	await expect(page.locator('header.site-header').getByRole('link', { name: 'Dashboard' })).toHaveAttribute('href', '/');
+	await expect(page.locator('header.site-header').getByRole('link', { name: 'Overview' })).toHaveAttribute('href', '/');
 	expect(res?.status()).toBe(200);
 
-	await expect(page.getByRole('heading', { name: 'Field sheet' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Overview', exact: true })).toBeVisible();
 	await expect(page.getByRole('list', { name: 'Headline numbers' })).toContainText('Water injected');
 	await expect(page.getByRole('application')).toBeVisible();
 	await page.waitForTimeout(800); // let the initial fit settle
 	await page.screenshot({ path: `.playwright/screenshots/${info.project.name}-01-overview.png` });
 
-	// Select a property, then open an injector from the attention list.
+	// Select a property, then open an asset from "Needs a contractor".
 	await page.getByRole('button', { name: 'Show Myers Langlie Mattix on the map' }).click();
 	await page.waitForTimeout(900);
 	await page.screenshot({ path: `.playwright/screenshots/${info.project.name}-02-mlmu.png` });
 
 	await page.getByRole('button', { name: 'All reports' }).click();
-	const firstAlert = page.locator('section[aria-labelledby="attention-title"] li button').first();
+	const firstAlert = page.locator('section[aria-labelledby="needs-title"] li button', { hasText: 'Details' }).first();
 	if (await firstAlert.count()) {
 		await firstAlert.scrollIntoViewIfNeeded();
 		await firstAlert.click();
@@ -274,5 +274,5 @@ test('live Amplified panel shows current well status, and a linked well shows it
 test('old /dashboard links land on the home page', async ({ page }) => {
 	await page.goto('/dashboard');
 	await expect(page).toHaveURL(/^https?:\/\/[^/]+\/$/);
-	await expect(page.getByRole('heading', { name: 'Field sheet' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Overview', exact: true })).toBeVisible();
 });

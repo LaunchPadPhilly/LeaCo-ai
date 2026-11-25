@@ -133,7 +133,7 @@
 					{#if v !== null && v > 0}
 						<path d={column(geo.X(i), geo.Y(v), geo.bw, geo.base)} fill={color} opacity={inPeriod(i, period) || hover === i ? 1 : 0.45} />
 					{:else if v === null}
-						<rect x={geo.X(i) - geo.bw / 2} y={geo.base - 6} width={geo.bw} height="6" fill="none" stroke="#9AA0A6" stroke-dasharray="2 2" />
+						<rect x={geo.X(i) - geo.bw / 2} y={geo.base - 6} width={geo.bw} height="6" fill="none" stroke="#6B7280" stroke-dasharray="2 2" />
 					{/if}
 				{/each}
 			{:else}

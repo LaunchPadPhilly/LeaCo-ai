@@ -1,20 +1,18 @@
 <script lang="ts">
 	import { LAYER_GROUPS, VIEWS, allLayers, viewsOf, viewState, type LayerId, type LayerState, type LayerView } from '$lib/leaco/ops/layers';
-	import { BASEMAPS, BASEMAP_IDS, type BasemapId } from '$lib/leaco/ops/basemap';
 	import { INJECTOR_STATUS, WELL_STATUS } from '$lib/leaco/ops/status';
 	import AssetGlyph from './AssetGlyph.svelte';
 
 	/**
 	 * Turn map layers on and off (brief §3 "Layers panel"): quick sets, all on/off, and one
-	 * checkbox per layer with its count, legend and source.
+	 * checkbox per layer with its count, legend and source. The background map (Topo by
+	 * default) is chosen in Settings → Map, not here.
 	 */
 	let {
 		layers = $bindable(),
-		basemap = $bindable(),
 		counts
 	}: {
 		layers: LayerState;
-		basemap: BasemapId;
 		counts: Partial<Record<LayerId, number>>;
 	} = $props();
 
@@ -46,19 +44,6 @@
 
 	{#if open}
 		<div class="panel" id="ops-layers-panel" role="region" aria-label="Map layers">
-			<fieldset class="bm">
-				<legend>Background map</legend>
-				<div class="seg">
-					{#each BASEMAP_IDS as id (id)}
-						<label class:on={basemap === id}>
-							<input type="radio" name="ops-basemap" value={id} checked={basemap === id} onchange={() => (basemap = id)} />
-							{BASEMAPS[id].label}
-						</label>
-					{/each}
-				</div>
-				<small>{basemap === 'none' ? 'Plain background: only LeaCo and public-record layers.' : `USGS The National Map · free U.S. government data · doesn’t show most lease roads accurately`}</small>
-			</fieldset>
-
 			<p class="hint">Quick sets</p>
 			<div class="seg" role="group" aria-label="Quick sets">
 				{#each Object.entries(VIEWS) as [id, v] (id)}
@@ -224,44 +209,11 @@
 		box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
 	}
 
-	.bm {
-		border-top: 0;
-		padding-top: 0;
-		gap: 6px;
-	}
 
-	.bm small {
-		font-size: 10.5px;
-		color: var(--ops-muted);
-	}
 
-	.bm label {
-		display: grid;
-		place-items: center;
-		min-height: 32px;
-		border-radius: 6px;
-		font-size: 12px;
-		font-weight: 600;
-		color: var(--ops-muted);
-		cursor: pointer;
-	}
 
-	.bm label.on {
-		background: var(--ops-panel);
-		color: var(--ops-accent);
-		box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
-	}
 
-	.bm label:has(input:focus-visible) {
-		outline: 2.5px solid var(--ops-accent);
-		outline-offset: 1px;
-	}
 
-	.bm input {
-		position: absolute;
-		opacity: 0;
-		pointer-events: none;
-	}
 
 	.acts {
 		display: flex;

@@ -19,8 +19,8 @@
 		if (!user) return [];
 
 		return [
-			// The dashboard is the signed-in home page.
-			{ href: '/', label: 'Dashboard', show: true },
+			// The Overview (the operations dashboard) is the signed-in home page.
+			{ href: '/', label: 'Overview', show: true },
 			{ href: '/admin', label: 'Admin', show: user.isAdmin },
 			{ href: '/settings', label: 'Settings', show: true }
 		].filter((link) => link.show);
@@ -49,6 +49,13 @@
 	// /admin/users/[id] and back) doesn't replay it.
 	const topLevelSegment = $derived(page.url.pathname.split('/')[1] ?? '');
 
+	// Phones (DESIGN.md → Layout): the menu folds behind a button and closes on navigation.
+	let menuOpen = $state(false);
+	$effect(() => {
+		void page.url.pathname;
+		menuOpen = false;
+	});
+
 </script>
 
 <svelte:head>
@@ -58,7 +65,21 @@
 <header class="site-header">
 	<div class="site-header__inner">
 		<a class="site-header__brand" href="/">{appConfig.displayName}</a>
-		<nav class="site-header__nav">
+		{#if data.user}
+			<button
+				type="button"
+				class="site-header__menu button--secondary"
+				aria-expanded={menuOpen}
+				aria-controls="site-nav"
+				aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+				onclick={() => (menuOpen = !menuOpen)}
+			>
+				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+					{#if menuOpen}<path d="M6 6l12 12M18 6L6 18" />{:else}<path d="M4 7h16M4 12h16M4 17h16" />{/if}
+				</svg>
+			</button>
+		{/if}
+		<nav class="site-header__nav" class:site-header__nav--open={menuOpen} id="site-nav" aria-label="Main">
 			{#if data.user}
 				<div class="site-header__links" use:nav.setContainer>
 					<span
@@ -103,5 +124,51 @@
 		border-radius: var(--radius-md);
 		pointer-events: none;
 		z-index: 0;
+	}
+
+	.site-header__menu {
+		display: none;
+	}
+
+	@media (max-width: 640px) {
+		.site-header__menu {
+			display: inline-grid;
+			place-items: center;
+			width: 44px;
+			height: 44px;
+			padding: 0;
+		}
+
+		.site-header__nav {
+			display: none;
+			flex-basis: 100%;
+			flex-direction: column;
+			align-items: stretch;
+			gap: var(--space-2);
+			padding-top: var(--space-2);
+		}
+
+		.site-header__nav--open {
+			display: flex;
+		}
+
+		.site-header__links {
+			flex-direction: column;
+		}
+
+		.site-header__indicator {
+			display: none;
+		}
+
+		.site-header__links :global(.nav-link) {
+			min-height: 44px;
+			display: flex;
+			align-items: center;
+		}
+
+		.site-header__links :global(.nav-link--current) {
+			background: var(--warm-100);
+			border-radius: var(--radius-md);
+		}
 	}
 </style>

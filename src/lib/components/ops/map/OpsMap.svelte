@@ -8,7 +8,7 @@
 	import { volumeText, pressureText } from '$lib/leaco/ops/assetText';
 	import type { FeatureInfo } from '$lib/leaco/ops/feature';
 	import { parseLayerState, viewState, type LayerState } from '$lib/leaco/ops/layers';
-	import { BASEMAPS, DEFAULT_BASEMAP, parseBasemap, tileBounds, tilesFor, zoomFor, type BasemapId } from '$lib/leaco/ops/basemap';
+	import { BASEMAPS, BASEMAP_STORAGE_SUFFIX, DEFAULT_BASEMAP, parseBasemap, tileBounds, tilesFor, zoomFor, type BasemapId } from '$lib/leaco/ops/basemap';
 	import type { AreaKey, LonLat, OpsAsset, OpsData, PropertyKey, Route } from '$lib/leaco/ops/types';
 	import { storageKeyPrefix } from '$lib/appConfig';
 	import AssetGlyph from './AssetGlyph.svelte';
@@ -48,18 +48,9 @@
 		}
 	});
 
-	// ---------- background map (USGS), remembered per browser
-	const BASEMAP_KEY = `${storageKeyPrefix}ops-basemap`;
+	// ---------- background map (USGS): Topo unless changed in Settings → Map (stored per browser)
+	const BASEMAP_KEY = `${storageKeyPrefix}${BASEMAP_STORAGE_SUFFIX}`;
 	let basemap = $state<BasemapId>(DEFAULT_BASEMAP);
-	$effect(() => {
-		const value = basemap;
-		if (!layersReady) return;
-		try {
-			localStorage.setItem(BASEMAP_KEY, value);
-		} catch {
-			/* storage unavailable */
-		}
-	});
 
 	/** Tiles for the visible screen (rotation included), plus the level below as a no-flash fallback. */
 	const basemapTiles = $derived.by(() => {
@@ -702,7 +693,7 @@
 		</label>
 	</div>
 
-	<LayersPanel bind:this={layersPanel} bind:layers bind:basemap counts={{ injectors: data.assets.filter((a) => a.kind === 'injector').length, wells: data.assets.filter((a) => a.kind === 'well').length, routes: data.routes.length }} />
+	<LayersPanel bind:this={layersPanel} bind:layers counts={{ injectors: data.assets.filter((a) => a.kind === 'injector').length, wells: data.assets.filter((a) => a.kind === 'well').length, routes: data.routes.length }} />
 
 	<!-- View controls -->
 	<div class="controls" aria-label="Map view controls" role="group">

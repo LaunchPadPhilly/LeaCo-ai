@@ -16,11 +16,11 @@
 {:else}
 	<div class="page page--narrow">
 		<div class="card hero">
-			<span class="eyebrow">{appConfig.displayName}</span>
-			<h1>Your organization's data, queryable by people and by AI agents</h1>
+			<span class="eyebrow">LeaCo Operations</span>
+			<h1>What needs fixing, and where, every morning.</h1>
 			<p class="muted">
-				Internal data platform with Google Workspace sign-in, admin-granted data scopes, and a
-				read-only MCP server that AI clients connect to with OAuth. Sign in with your Workspace
+				Well status, water injected, production and land for every LeaCo property, from
+				Amplified and the daily reports, on one screen. Sign in with your LeaCo Google Workspace
 				account to continue.
 			</p>
 			<a class="button" href="/api/auth/google/login">Sign in with Google</a>
