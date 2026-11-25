@@ -2,13 +2,14 @@
 	import './ops.css';
 	import type { DashboardLoad } from '$lib/leaco/ops/live';
 	import Dashboard from './Dashboard.svelte';
+	import type { SetAside } from '$lib/leaco/ops/needs';
 
 	/** The dashboard, or an honest empty state, for the signed-in home page (under the app header). */
-	let { dashboard }: { dashboard: DashboardLoad } = $props();
+	let { dashboard, setAside }: { dashboard: DashboardLoad; setAside?: SetAside } = $props();
 </script>
 
 {#if dashboard.state === 'ok' && dashboard.ops}
-	<Dashboard ops={dashboard.ops} live={dashboard.live} reports={dashboard.reports} reportsNote={dashboard.reportsNote} />
+	<Dashboard ops={dashboard.ops} live={dashboard.live} reports={dashboard.reports} reportsNote={dashboard.reportsNote} {setAside} />
 {:else}
 	<div class="ops ops-empty">
 		<div class="empty-card">

@@ -10,7 +10,7 @@
 	import { areaSummary, attention, headline } from '$lib/leaco/ops/summary';
 	import type { AreaKey, OpsData, PropertyKey } from '$lib/leaco/ops/types';
 	import type { DailyReport } from '$lib/leaco/dailyReport';
-	import { needsContractor } from '$lib/leaco/ops/needs';
+	import { needsContractor, withoutSetAside, type SetAside } from '$lib/leaco/ops/needs';
 	import AttentionList from './AttentionList.svelte';
 	import NeedsList from './NeedsList.svelte';
 	import StatusKey from './StatusKey.svelte';
@@ -26,8 +26,9 @@
 		ops: serverOps,
 		live: initialLive,
 		reports = [],
-		reportsNote = null
-	}: { ops: OpsData; live: LiveState; reports?: DailyReport[]; reportsNote?: string | null } = $props();
+		reportsNote = null,
+		setAside
+	}: { ops: OpsData; live: LiveState; reports?: DailyReport[]; reportsNote?: string | null; setAside?: SetAside } = $props();
 	const amplifiedMode = $derived(serverOps.mode === 'amplified');
 
 	// ---------- live Amplified data: shown at once from the saved copy, refreshed in the background
@@ -102,7 +103,7 @@
 	const focusArea = $derived(selectedProperty && PROPERTIES[selectedProperty].kind === 'operating' ? (selectedProperty as AreaKey) : null);
 	const items = $derived(selectedProperty && !focusArea ? [] : attention(ops, period, focusArea, (i) => shortDay(dates[i])));
 	/** Top of the Overview: what needs a visit, from the period's reports and Amplified's live data. */
-	const needs = $derived(needsContractor(ops, period, liveSnap, now, (i) => shortDay(dates[i])));
+	const needs = $derived(withoutSetAside(needsContractor(ops, period, liveSnap, now, (i) => shortDay(dates[i])), setAside));
 	/** Lesser flags (e.g. no volume reading) stay beside the property cards. */
 	const lesser = $derived(items.filter((i) => i.severity !== 'high'));
 	const asset = $derived(selectedAsset ? (ops.assets.find((a) => a.key === selectedAsset) ?? null) : null);
@@ -150,7 +151,7 @@
 
 	<main class="body">
 		<div class="lead">
-			<NeedsList items={needs} periodText={pText} onpick={(key) => pickAsset(key, true)} />
+			<NeedsList items={needs} periodText={pText} {setAside} onpick={(key) => pickAsset(key, true)} />
 			<div class="now">
 				<LivePanel {live} {refreshing} {now} nameOf={(key) => ops.assets.find((a) => a.key === key)?.name ?? key} onrefresh={() => refreshLive()} onpick={(key) => pickAsset(key, true)} />
 			</div>

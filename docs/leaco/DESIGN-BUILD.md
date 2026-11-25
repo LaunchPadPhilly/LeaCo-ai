@@ -15,14 +15,14 @@ local e2e screenshots before its PR opens.
 | A4 | Map page: ship the full filter panel from the reference map now. Layers whose data isn't loaded say so; loading that data is a separate task. |
 | A5 | Background map: **Topo by default**, changed in **Settings → Map**, not on the map. |
 | A6 | Census "Public roads" stays removed (owner request, 2026-11-20). |
-| A7 | Every phase's PR targets **`dev`** first. After it has been reviewed in `dev`, a separate PR takes it from `dev` to `uat` (which deploys UAT). |
+| A7 | Every phase's PR targets **`dev`**. When all phases are reviewed and merged in `dev`, **one** PR takes the whole redesign from `dev` to `uat` (which deploys UAT). |
 
 ## Phases
 
 | Phase | Scope | Status |
 |---|---|---|
 | 1 | Design tokens; header renamed to Overview with a phone menu; Overview with "Needs a contractor" beside live Amplified; in-place status key; sign-in; Settings → Map background; states restyled | Built 2026-11-25 |
-| 2 | Issues page: open / contractor sent / archived / resolved, archive with reason and return date, issue rules; database tables and audit events | Not started |
+| 2 | Issues page: open / contractor sent / archived / resolved, archive with reason and return date, issue rules; database tables and audit events | Built 2026-11-25 |
 | 3 | Well page (`/wells/[key]`) with saved status history; Daily reports page | Not started |
 | 4 | Full map page with the reference map's filter panel | Not started |
 | 5 | Admin screens: users with switches, agents, connected apps, activity log | Not started |

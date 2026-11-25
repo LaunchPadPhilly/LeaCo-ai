@@ -1,13 +1,22 @@
 <script lang="ts">
 	import { googleDirectionsUrl } from '$lib/leaco/ops/directions';
-	import { needsSummary, type NeedItem } from '$lib/leaco/ops/needs';
+	import { needsSummary, type NeedItem, type SetAside } from '$lib/leaco/ops/needs';
 
 	/**
 	 * "Needs a contractor": the first thing on the Overview (DESIGN.md → Layout). One row per
 	 * asset: symbol · name and property · what's wrong and its source · actions. Shapes follow
 	 * the status key, so color is never the only signal.
 	 */
-	let { items, periodText, onpick }: { items: NeedItem[]; periodText: string; onpick: (key: string) => void } = $props();
+	let { items, periodText, setAside, onpick }: { items: NeedItem[]; periodText: string; setAside?: SetAside; onpick: (key: string) => void } = $props();
+
+	const asideText = $derived.by(() => {
+		if (!setAside) return null;
+		const parts = [
+			setAside.contractorSent ? `${setAside.contractorSent} with a contractor` : null,
+			setAside.archived ? `${setAside.archived} archived` : null
+		].filter(Boolean);
+		return parts.length ? `${parts.join(' · ')}, not shown` : null;
+	});
 
 	const LIMIT = 8;
 	let expanded = $state(false);
@@ -19,8 +28,9 @@
 	<div class="head">
 		<div>
 			<h2 id="needs-title">Needs a contractor</h2>
-			<p class="sub">{items.length ? `${items.length} open · ${summary}` : `Nothing flagged · ${periodText}`}</p>
+			<p class="sub">{items.length ? `${items.length} open · ${summary}` : `Nothing flagged · ${periodText}`}{#if asideText}<span> · {asideText}</span>{/if}</p>
 		</div>
+		{#if setAside}<a class="manage" href="/issues">Manage issues</a>{/if}
 	</div>
 
 	{#if items.length === 0}
@@ -73,6 +83,22 @@
 
 	.head {
 		padding: 18px 20px 12px;
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 12px;
+		flex-wrap: wrap;
+	}
+
+	.manage {
+		font-weight: 600;
+		color: var(--ops-accent);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	.manage:hover {
+		text-decoration: underline;
 	}
 
 	h2 {

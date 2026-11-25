@@ -368,3 +368,79 @@ model DocumentIngestRun {
 
   @@index([status, startedAt])
 }
+
+/// What kind of problem an issue is. An asset can have several, one per kind.
+enum LeacoIssueKind {
+  /// Producing well shut down (Amplified, or the daily report's status).
+  SHUTDOWN
+  /// Producing well idle for longer than the rule allows.
+  IDLE
+  /// Device stopped checking in; the well's status may be out of date.
+  OFFLINE
+  /// Open Amplified ticket.
+  TICKET
+  /// Injector not taking water (daily reports).
+  STUCK
+  /// Total water injected fell below the 7-day average by more than the rule allows.
+  WATER_DROP
+  /// No daily report by the rule's time.
+  REPORT_LATE
+}
+
+enum LeacoIssueStatus {
+  OPEN
+  CONTRACTOR_SENT
+  ARCHIVED
+  RESOLVED
+}
+
+/// Why an admin archived an issue (Issues page, DESIGN.md).
+enum LeacoArchiveReason {
+  NORMAL_FOR_WELL
+  NOT_URGENT
+  SCHEDULED
+  DATA_PROBLEM
+}
+
+/// A problem the dashboard found, and what people decided about it (direction A, phase 2).
+/// Rows are opened and resolved automatically from the data; only admins change the status.
+/// Who changed what is in AuditEvent (resource "LeacoIssue"), not here.
+model LeacoIssue {
+  id            String              @id @default(cuid())
+  /// Dashboard asset key (e.g. EEU-21), or "ALL" / "REPORTS" for issues not tied to one asset.
+  assetKey      String
+  kind          LeacoIssueKind
+  status        LeacoIssueStatus    @default(OPEN)
+  /// Name and property as last seen, so resolved issues still read well.
+  assetName     String
+  property      String?
+  /// Latest description of the problem, and where it came from.
+  detail        String
+  source        String
+  /// When the condition was first seen; rule durations count from here.
+  firstSeenAt   DateTime            @default(now())
+  /// Last time the condition was still true.
+  lastSeenAt    DateTime            @default(now())
+  resolvedAt    DateTime?
+  archiveReason LeacoArchiveReason?
+  /// Archived issues return to OPEN on this day (and always if they get worse).
+  returnOn      DateTime?           @db.Date
+  note          String?             @db.VarChar(500)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@index([status])
+  @@index([assetKey, kind])
+}
+
+/// One row per rule the admin changed; a missing row means the rule's default.
+model LeacoIssueRule {
+  /// Rule key, e.g. "well_idle" (src/lib/leaco/issues/rules.ts).
+  key       String   @id
+  enabled   Boolean
+  /// Hours, reports or percent, depending on the rule.
+  threshold Int?
+  /// Extra choice, e.g. which ticket priorities count.
+  option    String?
+  updatedAt DateTime @updatedAt
+}

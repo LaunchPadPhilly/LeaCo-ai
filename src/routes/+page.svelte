@@ -12,7 +12,7 @@
 
 {#if data.signedIn}
 	<!-- Signed-in home is the LeaCo operations dashboard, under the normal app header. -->
-	<DashboardScreen dashboard={data.dashboard} />
+	<DashboardScreen dashboard={data.dashboard} setAside={data.setAside} />
 {:else}
 	<div class="page page--narrow">
 		<div class="card hero">

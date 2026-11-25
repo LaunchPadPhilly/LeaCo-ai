@@ -21,6 +21,8 @@
 		return [
 			// The Overview (the operations dashboard) is the signed-in home page.
 			{ href: '/', label: 'Overview', show: true },
+			// Everyone signed in sees issues; only admins change them (server-checked).
+			{ href: '/issues', label: 'Issues', show: true },
 			{ href: '/admin', label: 'Admin', show: user.isAdmin },
 			{ href: '/settings', label: 'Settings', show: true }
 		].filter((link) => link.show);
