@@ -1,8 +1,9 @@
 # Building direction A
 
 Direction A ("Overview", [DESIGN.md](../../DESIGN.md)) was chosen on 2026-11-25 from the design
-canvas (claude.ai artifact "LeaCo Dashboard Directions"). It is built in phases, one PR each;
-each phase passes `db:validate`, `check`, `test:unit` and both builds before the next starts.
+canvas (claude.ai artifact "LeaCo Dashboard Directions"). It is built in phases, one PR each
+into `dev` (A7); each phase passes `db:validate`, `check`, `test:unit`, both builds and the
+local e2e screenshots before its PR opens.
 
 ## Owner decisions (2026-11-25)
 
@@ -14,6 +15,7 @@ each phase passes `db:validate`, `check`, `test:unit` and both builds before the
 | A4 | Map page: ship the full filter panel from the reference map now. Layers whose data isn't loaded say so; loading that data is a separate task. |
 | A5 | Background map: **Topo by default**, changed in **Settings → Map**, not on the map. |
 | A6 | Census "Public roads" stays removed (owner request, 2026-11-20). |
+| A7 | Every phase's PR targets **`dev`** first. After it has been reviewed in `dev`, a separate PR takes it from `dev` to `uat` (which deploys UAT). |
 
 ## Phases
 
