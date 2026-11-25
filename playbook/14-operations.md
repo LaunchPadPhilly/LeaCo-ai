@@ -283,44 +283,53 @@ line is the bug.
 
 EventBridge Scheduler starts `scripts/ingest-documents.ts` in the `mcp` family every hour
 (`infra/modules/environment/ingest-schedule.tf`, enabled per environment root with
-`ingest_schedule_enabled`). Each run lists Drive and fetches only new or changed files. A
-quiet hour writes nothing but its sync record. The schedule never passes `--force`, and
-runs never overlap: a run that finds another in progress logs `sync.skipped_already_running`
-and exits 0.
+`ingest_schedule_enabled`; UAT defaults to `true`). Each run lists the Dropbox folder
+(ADR 0003) and reads only new or changed files; new subfolders inside the root folder are
+picked up the same way. A quiet hour writes nothing but its sync record. The schedule
+never passes `--force`, and runs never overlap: a run that finds another in progress logs
+`outcome: SKIPPED` and exits 3, which does not alert.
+
+The task definition is given without a revision, so each run uses the latest `mcp`
+revision, which is the image of the last deploy. A deploy that changes the sync code takes
+effect at the next hour.
 
 **Enable or change it:** section G, with `TF_VAR_ingest_alert_email` exported. The first
-apply creates the schedule, its IAM role, a dead-letter queue and, with an email set, an SNS
-topic plus three alarms. AWS emails a subscription confirmation, and no alert is delivered
-until someone clicks it.
+apply creates the schedule, its IAM role, a dead-letter queue, two log metric filters and,
+with an email set, an SNS topic plus three alarms. AWS emails a subscription confirmation,
+and no alert is delivered until someone clicks it. Cost is a minute or two of one task per
+hour, well under a dollar a month.
 
 **Check it is running:**
 
 ```bash
 aws scheduler get-schedule --name <slug>-uat-ingest --query '{state:State,expr:ScheduleExpression}'
-MSYS_NO_PATHCONV=1 aws logs filter-log-events --log-group-name /ecs/<slug>-uat-mcp \
-  --start-time $(( ($(date +%s) - 3*3600) * 1000 )) --filter-pattern '{ $.event = "ingest.run" }' \
-  --query 'events[].message' --output text | tr '\t' '\n' | tail -5
+MSYS_NO_PATHCONV=1 aws logs filter-log-events --log-group-name /ecs/<slug>-uat-mcp   --start-time $(( ($(date +%s) - 3*3600) * 1000 )) --filter-pattern '{ $.event = "ingest.run" }'   --query 'events[].message' --output text | tr '	' '
+' | tail -5
 ```
 
-Each run logs one `ingest.run` line with its outcome and counts, never file titles. The
-`document_source_changes` MCP tool should report `upToDate: true` within an hour of a Drive
-change.
+Each run (scheduled or manual) logs one `ingest.run` JSON line with its outcome (`OK`,
+`PARTIAL`, `FAILED`, `SKIPPED`) and counts, never file names. The
+`document_source_changes` MCP tool should report no pending changes within an hour of a
+Dropbox change.
 
 **Alerts** (email, sent on entering ALARM and again on recovery):
-- `<slug>-uat-ingest-failed`: a run failed, partially failed (some files could not be
-  parsed), or crashed. Read its `ingest.run` line and the MCP tool `document_source_status`.
-  `AUTH_FAILED` or `NOT_SHARED` usually means the service-account key or the folder share
-  changed (ADR 0001 section 7).
+- `<slug>-uat-ingest-failed`: a run failed, or some files could not be read (`PARTIAL`).
+  Read its `ingest.run` line, the full log of that task, and the MCP tool
+  `document_source_status`. `reason: AUTH_FAILED` usually means the Dropbox refresh token
+  was revoked or the app unlinked (Play 03b, Rotation); `NOT_FOUND` means the root folder
+  was unshared or deleted. A file that failed is retried only when it changes, so a
+  `PARTIAL` alarm clears on the next run.
 - `<slug>-uat-ingest-missed`: no run has logged for three hours. The schedule may be
-  disabled, or tasks may be failing to start: check `aws ecs list-tasks --cluster
-  <slug>-uat-cluster --started-by scheduled-ingest --desired-status STOPPED`, then
-  `describe-tasks` for the `stoppedReason`.
+  disabled, or tasks may be failing to start. List recent stopped tasks with `aws ecs
+  list-tasks --cluster <slug>-uat-cluster --family <slug>-uat-mcp --desired-status
+  STOPPED`, then `describe-tasks` for the `stoppedReason` (scheduled ones have
+  `group: scheduled-ingest`).
 - `<slug>-uat-ingest-dlq`: the scheduler could not call RunTask after its retries. The
   reason is in the queue: `aws sqs receive-message --queue-url "$(terraform -chdir=infra/environments/uat output -raw ingest_dlq_url)" --attribute-names All --message-attribute-names All`.
 
 **Pause or resume:** set `ingest_schedule_enabled = false` (or back to `true`) in the
-environment root and apply via section G. Pausing removes the schedule, its role, the queue
-and the alarms. Manual runs (section E) keep working either way.
+environment root and apply via section G. Pausing removes the schedule, its role, the
+queue, the metric filters and the alarms. Manual runs (section E) keep working either way.
 
 **EVIDENCE 14.L**: the `get-schedule` output showing `ENABLED`, and at least one
 `ingest.run` line logged after the apply (from the filter command above).

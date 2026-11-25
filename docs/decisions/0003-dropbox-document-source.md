@@ -89,7 +89,8 @@ page) and a verbatim quote under every claim taken from a document.
   cannot request the new scope. Until then the tools return `NOT_CONFIGURED` or no results.
 - **Running the sync deployed:** as a one-off ECS task on the MCP image (command override
   `node_modules/.bin/tsx scripts/ingest-documents.ts`), since only in-VPC tasks reach RDS.
-  An hourly EventBridge schedule is a follow-up.
+  It also runs hourly from EventBridge Scheduler (`infra/modules/environment/ingest-schedule.tf`,
+  Play 14 section L), with email alarms on failed, partial and missed runs.
 - **Memory:** pdf.js holds the whole PDF in memory while reading it. The 156 MB file needs
   the MCP task to have enough memory headroom for the one-off sync task.
 - **Not covered:** OCR for scanned PDFs, structured numbers from the Daily Reports

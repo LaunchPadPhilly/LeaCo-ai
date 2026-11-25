@@ -79,3 +79,12 @@ output "db_master_user_secret_arn" {
   description = "RDS-managed master credential secret (uat only)."
   value       = var.create_rds && var.db_manage_master_password ? aws_db_instance.this[0].master_user_secret[0].secret_arn : null
 }
+
+output "ingest_schedule_name" {
+  value = var.ingest_schedule_enabled ? aws_scheduler_schedule.ingest[0].name : null
+}
+
+output "ingest_dlq_url" {
+  description = "Dead-letter queue of the hourly sync's RunTask calls (Play 14 section L)."
+  value       = var.ingest_schedule_enabled ? aws_sqs_queue.ingest_dlq[0].url : null
+}
