@@ -42,7 +42,7 @@
 						{#if item.property}<span class="small">{item.property}</span>{/if}
 					</span>
 					<span class="what">
-						<span><b class="state {item.kind}">{item.state}</b> · {item.detail}</span>
+						<span title={item.detail.length > 120 ? item.detail : undefined}><b class="state {item.kind}">{item.state}</b> · {item.detail.length > 120 ? `${item.detail.slice(0, 118).trimEnd()}…` : item.detail}</span>
 						<span class="small">{item.source}</span>
 					</span>
 					<span class="acts">

@@ -15,7 +15,17 @@ test('home page shows the dashboard under the app header, without console errors
 	expect(page.url(), 'redirected to sign-in: run `pnpm run dev:session` first').not.toContain('/api/auth/google');
 	// The dashboard is the signed-in home page, under the normal app header.
 	await expect(page.locator('header.site-header')).toBeVisible();
+	// Phones fold the menu behind a button (DESIGN.md → Layout).
+	await page.waitForLoadState('networkidle'); // hydrated, so the menu button responds
+	const menu = page.getByRole('button', { name: 'Open menu' });
+	if (info.project.name === 'phone') {
+		await expect(menu).toBeVisible();
+		await page.screenshot({ path: `.playwright/screenshots/${info.project.name}-00-menu-closed.png` });
+		await menu.click();
+		await page.screenshot({ path: `.playwright/screenshots/${info.project.name}-00-menu-open.png` });
+	}
 	await expect(page.locator('header.site-header').getByRole('link', { name: 'Overview' })).toHaveAttribute('href', '/');
+	if (await page.getByRole('button', { name: 'Close menu' }).isVisible()) await page.getByRole('button', { name: 'Close menu' }).click();
 	expect(res?.status()).toBe(200);
 
 	await expect(page.getByRole('heading', { name: 'Overview', exact: true })).toBeVisible();
@@ -211,23 +221,34 @@ test('background map fills the view at any zoom and can be switched', async ({ p
 	await page.waitForTimeout(1500);
 	await page.screenshot({ path: `.playwright/screenshots/${info.project.name}-10-zoomed-out-topo.png` });
 
-	await page.getByRole('button', { name: /Layers/ }).click();
-	await page.locator('label', { hasText: 'Aerial photo' }).click();
-	await expect(page.getByRole('radio', { name: 'Aerial photo' })).toBeChecked();
+	// The background is chosen in Settings → Map (owner decision A5), not on the map.
+	await expect(page.getByRole('radio', { name: 'Aerial photo' })).toHaveCount(0);
+	await page.goto('/settings');
+	await page.waitForLoadState('networkidle');
+	await expect(page.getByRole('tab', { name: 'Topo', exact: true })).toHaveAttribute('aria-selected', 'true');
+	await page.getByRole('tab', { name: 'Aerial photo' }).click();
+	await page.goto('/');
+	await page.getByRole('application').scrollIntoViewIfNeeded();
 	await expect.poll(async () => (await tiles.first().getAttribute('href')) ?? '').toContain('USGSImageryOnly');
-	await page.getByRole('button', { name: /Layers/ }).click();
 	await page.getByRole('button', { name: 'Show all areas' }).click();
 	await page.waitForTimeout(1500);
 	await page.screenshot({ path: `.playwright/screenshots/${info.project.name}-11-aerial.png` });
 
-	await page.getByRole('button', { name: /Layers/ }).click();
-	await page.locator('label').filter({ has: page.getByRole('radio', { name: 'None' }) }).click();
-	await expect(tiles).toHaveCount(0);
+	await page.goto('/settings');
+	await page.waitForLoadState('networkidle');
+	await page.getByRole('tab', { name: 'None', exact: true }).click();
+	await expect(page.getByRole('tab', { name: 'None', exact: true })).toHaveAttribute('aria-selected', 'true');
+	await page.screenshot({ path: `.playwright/screenshots/${info.project.name}-12-settings-map.png`, fullPage: true });
 
-	// The choice is remembered on reload.
-	await page.reload();
+	// The choice is remembered on the map.
+	await page.goto('/');
 	await page.waitForLoadState('networkidle');
 	await expect(page.locator('svg.canvas image')).toHaveCount(0);
+
+	// Back to the default for the other tests.
+	await page.goto('/settings');
+	await page.waitForLoadState('networkidle');
+	await page.getByRole('tab', { name: 'Topo', exact: true }).click();
 
 	expect(tileStatus.filter((s) => s >= 400)).toEqual([]);
 	expect(errors).toEqual([]);
