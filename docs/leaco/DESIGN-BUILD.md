@@ -22,7 +22,7 @@ local e2e screenshots before its PR opens.
 | Phase | Scope | Status |
 |---|---|---|
 | 1 | Design tokens; header renamed to Overview with a phone menu; Overview with "Needs a contractor" beside live Amplified; in-place status key; sign-in; Settings → Map background; states restyled | Built 2026-11-25 |
-| 2 | Issues page: open / contractor sent / archived / resolved, archive with reason and return date, issue rules; database tables and audit events | Not started |
+| 2 | Issues page: open / contractor sent / archived / resolved, archive with reason and return date, issue rules; database tables and audit events | Built 2026-11-25 |
 | 3 | Well page (`/wells/[key]`) with saved status history; Daily reports page | Not started |
 | 4 | Full map page with the reference map's filter panel | Not started |
 | 5 | Admin screens: users with switches, agents, connected apps, activity log | Not started |

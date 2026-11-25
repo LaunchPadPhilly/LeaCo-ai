@@ -102,6 +102,24 @@ export function needsContractor(
 	return [...byKey.values()].sort((x, y) => ORDER[x.kind] - ORDER[y.kind] || x.name.localeCompare(y.name));
 }
 
+/** Issues people archived or sent a contractor to (src/lib/server/leaco/issues.ts → setAsideIssues). */
+export type SetAside = { keys: string[]; archived: number; contractorSent: number };
+
+const ISSUE_KIND: Record<NeedKind, string[]> = {
+	shutdown: ['SHUTDOWN'],
+	stuck: ['STUCK'],
+	// An offline row is often a shut-down well whose device stopped checking in.
+	offline: ['OFFLINE', 'SHUTDOWN'],
+	ticket: ['TICKET']
+};
+
+/** Drop rows people have already dealt with on the Issues page. */
+export function withoutSetAside(items: NeedItem[], setAside: SetAside | undefined): NeedItem[] {
+	if (!setAside?.keys.length) return items;
+	const keys = new Set(setAside.keys);
+	return items.filter((i) => !ISSUE_KIND[i.kind].some((k) => keys.has(`${i.key}|${k}`)));
+}
+
 /** "3 wells down · 2 injectors not taking water · 1 open ticket", counting each row once. */
 export function needsSummary(items: NeedItem[]): string {
 	const n = (k: NeedKind) => items.filter((i) => i.kind === k).length;
