@@ -51,7 +51,15 @@ variable "web_secret_keys" {
 variable "mcp_secret_keys" {
   description = "Secret keys injected into the mcp container. Must include every key the tools in src/lib/server/mcp/tools.ts read."
   type        = list(string)
-  default     = ["AMPLIFIED_API_KEY", "DATABASE_URL", "MCP_OAUTH_ISSUER_URL", "MCP_SERVER_TOKEN"]
+  default = [
+    "AMPLIFIED_API_KEY",
+    "DATABASE_URL",
+    # Dropbox document source (Play 03b, ADR 0003). Added to uat/leaco/app before this list.
+    # DROPBOX_PATH_ROOT_NAMESPACE_ID is left out: it is empty (not a team space), and unset
+    # means the same to the connector. Add it only if the folder moves into a team space.
+    "DROPBOX_APP_KEY", "DROPBOX_APP_SECRET", "DROPBOX_REFRESH_TOKEN", "DROPBOX_ROOT_FOLDER_ID",
+    "MCP_OAUTH_ISSUER_URL", "MCP_SERVER_TOKEN",
+  ]
 }
 
 variable "db_name" {
