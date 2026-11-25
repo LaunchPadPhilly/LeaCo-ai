@@ -100,7 +100,7 @@
 					total={wells.length}
 					parts={[
 						{ count: count('Running'), color: WELL_STATUS.run.color, name: 'running' },
-						{ count: count('Idle'), color: '#E0A526', name: 'idle' },
+						{ count: count('Idle'), color: '#D99A1E', name: 'idle' },
 						{ count: count('Shutdown'), color: WELL_STATUS.down.color, name: 'shut down' },
 						{ count: count(null), color: WELL_STATUS.nodata.color, name: 'no reading' }
 					]}
@@ -185,7 +185,7 @@
 		width: 8px;
 		height: 8px;
 		border-radius: 50%;
-		background: #9aa0a6;
+		background: #6B7280;
 		margin-right: 6px;
 		vertical-align: 1px;
 	}

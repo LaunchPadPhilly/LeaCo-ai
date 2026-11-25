@@ -1,5 +1,9 @@
 # `/dashboard` redesign plan: map-first operations view
 
+> **Superseded for look and layout on 2026-11-25** by direction A ("Overview") in
+> [DESIGN.md](../../DESIGN.md), built in phases tracked in [DESIGN-BUILD.md](DESIGN-BUILD.md).
+> The data rules and map decisions below still apply.
+
 Status: **R1 and R2 built** (2026-11-20). Light "field sheet" theme and map-first layout
 approved; local Playwright test session approved and added (`pnpm run dev:session`).
 Builds on [PLAN.md](PLAN.md) Phase 1 (prototype parity).

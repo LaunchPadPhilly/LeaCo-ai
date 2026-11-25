@@ -1,29 +1,29 @@
 :root {
-	--warm-50: #fdf8f3;
-	--warm-100: #f7ece1;
-	--warm-200: #edd9c4;
-	--warm-300: #ddb894;
-	--warm-500: #b4653a;
-	--warm-600: #97502c;
-	--warm-700: #7a3f23;
-	--ink-900: #2b1c14;
-	--ink-700: #4d3a2e;
-	--ink-500: #7a6558;
-	--surface: #fffdfb;
-	--border: #e8d9c9;
-	--success-bg: #e8f2e4;
-	--success-fg: #3d6b31;
-	--danger-bg: #fbe9e5;
-	--danger-fg: #a03520;
+	--warm-50: #f4f3ef;
+	--warm-100: #e6f0f3;
+	--warm-200: #ddd9cf;
+	--warm-300: #c9c4b8;
+	--warm-500: #0b6a87;
+	--warm-600: #084d63;
+	--warm-700: #063a4b;
+	--ink-900: #1b2127;
+	--ink-700: #3d454d;
+	--ink-500: #59626b;
+	--surface: #ffffff;
+	--border: #ddd9cf;
+	--success-bg: #e4f1e7;
+	--success-fg: #23733a;
+	--danger-bg: #fbe9e7;
+	--danger-fg: #b42318;
 	--radius: 10px;
-	--shadow: 0 1px 2px rgb(43 28 20 / 6%), 0 4px 16px rgb(43 28 20 / 6%);
-	--focus: 0 0 0 3px rgb(180 101 58 / 35%);
+	--shadow: 0 1px 2px rgb(27 33 39 / 6%), 0 4px 16px rgb(27 33 39 / 6%);
+	--focus: 0 0 0 3px rgb(11 106 135 / 35%);
 
 	/* Elevation scale — --shadow-1 aliases the original --shadow so nothing already
 	   using --shadow changes; --shadow-2/-3 are new, for the redesigned components. */
 	--shadow-1: var(--shadow);
-	--shadow-2: 0 2px 6px rgb(43 28 20 / 8%), 0 10px 24px rgb(43 28 20 / 10%);
-	--shadow-3: 0 4px 10px rgb(43 28 20 / 10%), 0 20px 40px rgb(43 28 20 / 14%);
+	--shadow-2: 0 2px 6px rgb(27 33 39 / 8%), 0 10px 24px rgb(27 33 39 / 10%);
+	--shadow-3: 0 4px 10px rgb(27 33 39 / 10%), 0 20px 40px rgb(27 33 39 / 14%);
 
 	/* Spacing scale, 4px base. */
 	--space-1: 0.25rem;
@@ -59,22 +59,22 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--warm-50: #241a14;
-		--warm-100: #2e211a;
-		--warm-200: #3d2c22;
-		--warm-300: #5c4232;
-		--warm-500: #d08a5c;
-		--warm-600: #e0a074;
-		--warm-700: #eab88f;
-		--ink-900: #f6ece3;
-		--ink-700: #dcc9b8;
-		--ink-500: #a99283;
-		--surface: #2a1e17;
-		--border: #453227;
-		--success-bg: #23331f;
-		--success-fg: #a8d199;
-		--danger-bg: #3a1f19;
-		--danger-fg: #f0a894;
+		--warm-50: #15191d;
+		--warm-100: #1d2a31;
+		--warm-200: #2b3238;
+		--warm-300: #46505a;
+		--warm-500: #5fb3cc;
+		--warm-600: #82c6da;
+		--warm-700: #a6d7e6;
+		--ink-900: #eef0f2;
+		--ink-700: #c8cdd2;
+		--ink-500: #939ba3;
+		--surface: #1c2126;
+		--border: #333b42;
+		--success-bg: #1c3324;
+		--success-fg: #9bd6a6;
+		--danger-bg: #3a1f22;
+		--danger-fg: #f2a69b;
 		--shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 16px rgb(0 0 0 / 25%);
 		--shadow-2: 0 2px 6px rgb(0 0 0 / 32%), 0 10px 24px rgb(0 0 0 / 30%);
 		--shadow-3: 0 4px 10px rgb(0 0 0 / 36%), 0 20px 40px rgb(0 0 0 / 40%);
@@ -88,47 +88,47 @@
  * over the OS setting once the user has picked one, in either direction.
  */
 :root[data-theme='dark'] {
-	--warm-50: #241a14;
-	--warm-100: #2e211a;
-	--warm-200: #3d2c22;
-	--warm-300: #5c4232;
-	--warm-500: #d08a5c;
-	--warm-600: #e0a074;
-	--warm-700: #eab88f;
-	--ink-900: #f6ece3;
-	--ink-700: #dcc9b8;
-	--ink-500: #a99283;
-	--surface: #2a1e17;
-	--border: #453227;
-	--success-bg: #23331f;
-	--success-fg: #a8d199;
-	--danger-bg: #3a1f19;
-	--danger-fg: #f0a894;
+	--warm-50: #15191d;
+	--warm-100: #1d2a31;
+	--warm-200: #2b3238;
+	--warm-300: #46505a;
+	--warm-500: #5fb3cc;
+	--warm-600: #82c6da;
+	--warm-700: #a6d7e6;
+	--ink-900: #eef0f2;
+	--ink-700: #c8cdd2;
+	--ink-500: #939ba3;
+	--surface: #1c2126;
+	--border: #333b42;
+	--success-bg: #1c3324;
+	--success-fg: #9bd6a6;
+	--danger-bg: #3a1f22;
+	--danger-fg: #f2a69b;
 	--shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 16px rgb(0 0 0 / 25%);
 	--shadow-2: 0 2px 6px rgb(0 0 0 / 32%), 0 10px 24px rgb(0 0 0 / 30%);
 	--shadow-3: 0 4px 10px rgb(0 0 0 / 36%), 0 20px 40px rgb(0 0 0 / 40%);
 }
 
 :root[data-theme='light'] {
-	--warm-50: #fdf8f3;
-	--warm-100: #f7ece1;
-	--warm-200: #edd9c4;
-	--warm-300: #ddb894;
-	--warm-500: #b4653a;
-	--warm-600: #97502c;
-	--warm-700: #7a3f23;
-	--ink-900: #2b1c14;
-	--ink-700: #4d3a2e;
-	--ink-500: #7a6558;
-	--surface: #fffdfb;
-	--border: #e8d9c9;
-	--success-bg: #e8f2e4;
-	--success-fg: #3d6b31;
-	--danger-bg: #fbe9e5;
-	--danger-fg: #a03520;
-	--shadow: 0 1px 2px rgb(43 28 20 / 6%), 0 4px 16px rgb(43 28 20 / 6%);
-	--shadow-2: 0 2px 6px rgb(43 28 20 / 8%), 0 10px 24px rgb(43 28 20 / 10%);
-	--shadow-3: 0 4px 10px rgb(43 28 20 / 10%), 0 20px 40px rgb(43 28 20 / 14%);
+	--warm-50: #f4f3ef;
+	--warm-100: #e6f0f3;
+	--warm-200: #ddd9cf;
+	--warm-300: #c9c4b8;
+	--warm-500: #0b6a87;
+	--warm-600: #084d63;
+	--warm-700: #063a4b;
+	--ink-900: #1b2127;
+	--ink-700: #3d454d;
+	--ink-500: #59626b;
+	--surface: #ffffff;
+	--border: #ddd9cf;
+	--success-bg: #e4f1e7;
+	--success-fg: #23733a;
+	--danger-bg: #fbe9e7;
+	--danger-fg: #b42318;
+	--shadow: 0 1px 2px rgb(27 33 39 / 6%), 0 4px 16px rgb(27 33 39 / 6%);
+	--shadow-2: 0 2px 6px rgb(27 33 39 / 8%), 0 10px 24px rgb(27 33 39 / 10%);
+	--shadow-3: 0 4px 10px rgb(27 33 39 / 10%), 0 20px 40px rgb(27 33 39 / 14%);
 }
 
 /*
@@ -144,9 +144,9 @@
 	--warm-100: #33373e;
 	--warm-200: #3f434c;
 	--warm-300: #565b66;
-	--warm-500: #d08a5c;
-	--warm-600: #e0a074;
-	--warm-700: #eab88f;
+	--warm-500: #5fb3cc;
+	--warm-600: #82c6da;
+	--warm-700: #a6d7e6;
 	--ink-900: #edeef0;
 	--ink-700: #c5c9d0;
 	--ink-500: #8b909a;
@@ -169,7 +169,7 @@
 
 body {
 	margin: 0;
-	font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 	background: var(--warm-50);
 	color: var(--ink-900);
 	line-height: 1.6;

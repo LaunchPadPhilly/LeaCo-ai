@@ -9,18 +9,18 @@ import type { Period } from './period';
 export type StatusStyle = { label: string; short: string; color: string; mark: 'fill' | 'cross' | 'outline' | 'dashed' };
 
 export const WELL_STATUS: Record<WellStatus, StatusStyle> = {
-	run: { label: 'Running', short: 'running', color: '#2E8B3E', mark: 'fill' },
-	down: { label: 'Down / shut off', short: 'down', color: '#C8322B', mark: 'cross' },
-	idle: { label: 'Idle: not pumping right now', short: 'idle', color: '#C98A0B', mark: 'outline' },
-	nodata: { label: 'No data', short: 'no data', color: '#9AA0A6', mark: 'dashed' },
-	unk: { label: 'Not mentioned in this report', short: 'not reported', color: '#9AA0A6', mark: 'outline' }
+	run: { label: 'Running', short: 'running', color: '#23733A', mark: 'fill' },
+	down: { label: 'Down / shut off', short: 'down', color: '#B42318', mark: 'cross' },
+	idle: { label: 'Idle: not pumping right now', short: 'idle', color: '#9A6A00', mark: 'outline' },
+	nodata: { label: 'No data', short: 'no data', color: '#6B7280', mark: 'dashed' },
+	unk: { label: 'Not mentioned in this report', short: 'not reported', color: '#6B7280', mark: 'outline' }
 };
 
 export const INJECTOR_STATUS: Record<InjectorStatus, StatusStyle> = {
-	take: { label: 'Taking water', short: 'taking water', color: '#1F6FD1', mark: 'fill' },
-	stuck: { label: 'Stuck: pressure but no flow', short: 'stuck', color: '#C8322B', mark: 'cross' },
-	idle: { label: 'Idle: no flow', short: 'idle', color: '#8DB8E8', mark: 'outline' },
-	nodata: { label: 'No volume reading', short: 'no reading', color: '#9AA0A6', mark: 'dashed' }
+	take: { label: 'Taking water', short: 'taking water', color: '#1F5FBF', mark: 'fill' },
+	stuck: { label: 'Stuck: pressure but no flow', short: 'stuck', color: '#B42318', mark: 'cross' },
+	idle: { label: 'Idle: no flow', short: 'idle', color: '#5B8FD6', mark: 'outline' },
+	nodata: { label: 'No volume reading', short: 'no reading', color: '#6B7280', mark: 'dashed' }
 };
 
 const WELL_CODES = new Set<WellStatus>(['run', 'down', 'idle', 'nodata', 'unk']);

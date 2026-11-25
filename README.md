@@ -57,7 +57,7 @@ fork it into per-stack variants until projects genuinely diverge.
 | **MCP server** (`mcp`) | `src/mcp-server`, `src/lib/server/mcp` | A standalone Node process serving only `/api/mcp`. Three principals: scoped agent tokens, user OAuth tokens (effective scope is the *live* intersection of token scope and current grants), and an optional legacy static token. Tools are a plain list in `src/lib/server/mcp/tools.ts`. |
 | **Infrastructure** | `infra/` | Terraform: account-level ECR + GitHub OIDC deploy role, and a per-environment module (ALB, ECS, IAM, logs, secret container, encrypted RDS) with a three-stage bring-up. |
 | **Pipeline** | `.github/workflows` | `ci.yml` on every push; `deploy.yml` builds both images once, migrates and deploys UAT, smoke-tests it, and stops; `deploy-production.yml` is dispatch-only and promotes an already-built SHA. |
-| **Claude Code setup** | `CLAUDE.md`, `.claude/` | Project rules, six specialized agents and nine skills. Agents are locked until the developer pastes real command output; see the Human Activation Gate Policy in `CLAUDE.md`. |
+| **Claude Code setup** | `CLAUDE.md`, `.claude/` | Project rules, six specialized agents and eleven skills. Agents are locked until the developer pastes real command output; see the Human Activation Gate Policy in `CLAUDE.md`. |
 | **Scripts** | `scripts/` | Template init and check, connection-string builder/repairer that never prints the password, the smoke test, and the environment diagnostic. |
 
 What is deliberately **not** here: any client domain, and nothing generated. `node_modules`,

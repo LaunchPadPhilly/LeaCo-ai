@@ -46,6 +46,9 @@ export const BASEMAPS: Record<BasemapId, Basemap> = {
 export const BASEMAP_IDS = ['none', 'topo', 'aerial'] as const;
 export const DEFAULT_BASEMAP: BasemapId = 'topo';
 
+/** localStorage key (after the app's storage-key prefix). Settings → Map writes it; the map reads it. */
+export const BASEMAP_STORAGE_SUFFIX = 'ops-basemap';
+
 export function parseBasemap(raw: string | null): BasemapId | null {
 	return BASEMAP_IDS.includes(raw as BasemapId) ? (raw as BasemapId) : null;
 }

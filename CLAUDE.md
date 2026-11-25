@@ -33,9 +33,10 @@ gate → `<AGENT> COMPLETE`. The same protocol governs the plays under `playbook
 ## Agents and skills
 
 Six agents (`architect`, `developer`, `reviewer`, `test-engineer`, `security-reviewer`,
-`devops-engineer`) and nine skills (`activation-gate`, `implement-feature`,
+`devops-engineer`) and eleven skills (`activation-gate`, `implement-feature`,
 `create-api-endpoint`, `database-change`, `debug-issue`, `write-tests`, `review-pr`,
-`security-review`, `deploy-check`). Agents are *who*; skills are *how*. There is no
+`security-review`, `deploy-check`, plus the third-party `impeccable` (UI design, pinned in
+`skills-lock.json`) and `playwright-cli` (browser automation)). Agents are *who*; skills are *how*. There is no
 orchestrator agent by design. Use a subagent when work can run independently, isolated
 context is valuable, specialist expertise is needed, or workstreams run in parallel. Do not
 use one for trivial edits, single-file changes, simple searches, or tightly sequential work
@@ -49,6 +50,8 @@ required PR review enforce policy.
   improvising, and paste the evidence each play asks for.
 - `infra/README.md` — Terraform runbook. **Read before touching any AWS resource.**
 - `SECURITY.md` — non-negotiables.
+- `PRODUCT.md` (who LeaCo AI is for and what it must do) and `DESIGN.md` (the visual system,
+  direction A "Overview") — read both before any UI change.
 
 ## Environments
 

@@ -16,9 +16,9 @@
 					<button type="button" onclick={() => onpick(item.asset.key)}>
 						<svg width="14" height="14" aria-hidden="true">
 							{#if item.asset.kind === 'injector'}
-								<path d="M7 1.5 L13 12.5 L1 12.5 Z" fill={item.severity === 'high' ? 'var(--ops-danger)' : '#9AA0A6'} />
+								<path d="M7 1.5 L13 12.5 L1 12.5 Z" fill={item.severity === 'high' ? 'var(--ops-danger)' : '#6B7280'} />
 							{:else}
-								<circle cx="7" cy="7" r="5.5" fill={item.severity === 'high' ? 'var(--ops-danger)' : '#9AA0A6'} />
+								<circle cx="7" cy="7" r="5.5" fill={item.severity === 'high' ? 'var(--ops-danger)' : '#6B7280'} />
 							{/if}
 						</svg>
 						<span>

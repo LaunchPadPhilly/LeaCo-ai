@@ -10,7 +10,10 @@
 	import { areaSummary, attention, headline } from '$lib/leaco/ops/summary';
 	import type { AreaKey, OpsData, PropertyKey } from '$lib/leaco/ops/types';
 	import type { DailyReport } from '$lib/leaco/dailyReport';
+	import { needsContractor } from '$lib/leaco/ops/needs';
 	import AttentionList from './AttentionList.svelte';
+	import NeedsList from './NeedsList.svelte';
+	import StatusKey from './StatusKey.svelte';
 	import KpiStrip from './KpiStrip.svelte';
 	import PeriodPicker from './PeriodPicker.svelte';
 	import PropertyCard from './PropertyCard.svelte';
@@ -98,6 +101,10 @@
 	const summaries = $derived(Object.fromEntries(AREA_KEYS.map((k) => [k, areaSummary(ops, k, period)])) as Record<AreaKey, ReturnType<typeof areaSummary>>);
 	const focusArea = $derived(selectedProperty && PROPERTIES[selectedProperty].kind === 'operating' ? (selectedProperty as AreaKey) : null);
 	const items = $derived(selectedProperty && !focusArea ? [] : attention(ops, period, focusArea, (i) => shortDay(dates[i])));
+	/** Top of the Overview: what needs a visit, from the period's reports and Amplified's live data. */
+	const needs = $derived(needsContractor(ops, period, liveSnap, now, (i) => shortDay(dates[i])));
+	/** Lesser flags (e.g. no volume reading) stay beside the property cards. */
+	const lesser = $derived(items.filter((i) => i.severity !== 'high'));
 	const asset = $derived(selectedAsset ? (ops.assets.find((a) => a.key === selectedAsset) ?? null) : null);
 	const check = $derived(ops.reconciliation[dates[period.e]] ?? null);
 
@@ -130,16 +137,24 @@
 	<header class="top">
 		<div class="brand">
 			<p class="ops-eyebrow">LeaCo Operations</p>
-			<h1>Field sheet</h1>
+			<h1>Overview</h1>
 			<p class="asof">
 				{amplifiedMode ? 'Latest Amplified production day' : 'Latest report'} <b>{longDay(dates[dates.length - 1])}</b> · showing <b>{pText}</b> ({period.e - period.s + 1} day{period.e > period.s ? 's' : ''})
 			</p>
 		</div>
-		<div class="picker"><PeriodPicker {dates} bind:period /></div>
+		<div class="tools">
+			<StatusKey />
+			<div class="picker"><PeriodPicker {dates} bind:period /></div>
+		</div>
 	</header>
 
 	<main class="body">
-		<LivePanel {live} {refreshing} {now} nameOf={(key) => ops.assets.find((a) => a.key === key)?.name ?? key} onrefresh={() => refreshLive()} onpick={(key) => pickAsset(key, true)} />
+		<div class="lead">
+			<NeedsList items={needs} periodText={pText} onpick={(key) => pickAsset(key, true)} />
+			<div class="now">
+				<LivePanel {live} {refreshing} {now} nameOf={(key) => ops.assets.find((a) => a.key === key)?.name ?? key} onrefresh={() => refreshLive()} onpick={(key) => pickAsset(key, true)} />
+			</div>
+		</div>
 
 		{#if amplifiedMode}
 			<section class="source" aria-labelledby="source-title">
@@ -204,10 +219,10 @@
 			{#if amplifiedMode}
 				<div class="trends">
 					<TrendChart title="Oil produced" subtitle="barrels per day, all leases" values={ops.totals.map((t) => t.oil)} {dates} {period} color="var(--ops-oil)" format={(v) => fmt(v, 1)} onpick={pickDay} />
-					<TrendChart title="Produced water" subtitle="barrels per day, LeaCo’s own produced water" values={ops.totals.map((t) => t.producedWater ?? null)} {dates} {period} color="#5B7C99" format={(v) => fmt(v)} onpick={pickDay} />
+					<TrendChart title="Produced water" subtitle="barrels per day, LeaCo’s own produced water" values={ops.totals.map((t) => t.producedWater ?? null)} {dates} {period} color="#4A6A86" format={(v) => fmt(v)} onpick={pickDay} />
 					{#if hasReports}
 						<TrendChart title="Water injected" subtitle="barrels per day (daily reports)" values={ops.totals.map((t) => t.water)} {dates} {period} color="var(--ops-water)" format={(v) => fmt(v)} onpick={pickDay} />
-						<TrendChart title="Wells running" subtitle="of {wellTotal} producing wells (report header)" values={wells} {dates} {period} kind="line" yMax={wellTotal} color="#2E8B3E" format={(v) => fmt(v)} onpick={pickDay} />
+						<TrendChart title="Wells running" subtitle="of {wellTotal} producing wells (report header)" values={wells} {dates} {period} kind="line" yMax={wellTotal} color="#23733A" format={(v) => fmt(v)} onpick={pickDay} />
 						<TrendChart title="Injectors taking water" subtitle="of {injTotal} injectors (report header)" values={injectors} {dates} {period} kind="line" yMax={injTotal} color="var(--ops-water)" format={(v) => fmt(v)} onpick={pickDay} />
 					{:else}
 						<div class="missing-card">
@@ -220,7 +235,7 @@
 			<div class="trends">
 				<TrendChart title="Water injected" subtitle="barrels per day" values={ops.totals.map((t) => t.water)} {dates} {period} color="var(--ops-water)" format={(v) => fmt(v)} onpick={pickDay} />
 				<TrendChart title="Oil produced" subtitle="barrels per day" values={ops.totals.map((t) => t.oil)} {dates} {period} color="var(--ops-oil)" format={(v) => fmt(v, 1)} onpick={pickDay} />
-				<TrendChart title="Wells running" subtitle="of {wellTotal} producing wells (report header)" values={wells} {dates} {period} kind="line" yMax={wellTotal} color="#2E8B3E" format={(v) => fmt(v)} onpick={pickDay} />
+				<TrendChart title="Wells running" subtitle="of {wellTotal} producing wells (report header)" values={wells} {dates} {period} kind="line" yMax={wellTotal} color="#23733A" format={(v) => fmt(v)} onpick={pickDay} />
 				<TrendChart title="Injectors taking water" subtitle="of {injTotal} injectors (report header)" values={injectors} {dates} {period} kind="line" yMax={injTotal} color="var(--ops-water)" format={(v) => fmt(v)} onpick={pickDay} />
 			</div>
 			{/if}
@@ -268,8 +283,8 @@
 			</section>
 			<aside class="block attention-col">
 				<AttentionList
-					{items}
-					title={focusArea ? `Needs attention · ${PROPERTIES[focusArea].name}` : 'Needs attention'}
+					items={lesser}
+					title={focusArea ? `Worth a look · ${PROPERTIES[focusArea].name}` : 'Worth a look'}
 					onpick={(key) => pickAsset(key, true)}
 				/>
 			</aside>
@@ -337,7 +352,7 @@
 		justify-content: space-between;
 		gap: 12px 24px;
 		padding: 14px var(--gutter) 12px;
-		background: rgb(236 233 225 / 94%);
+		background: rgb(244 243 239 / 94%);
 		backdrop-filter: blur(6px);
 		border-bottom: 1px solid var(--ops-line);
 	}
@@ -364,8 +379,35 @@
 		font-weight: 600;
 	}
 
+	.tools {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		gap: 10px;
+		width: min(540px, 100%);
+		justify-content: flex-end;
+	}
+
 	.picker {
-		width: min(420px, 100%);
+		flex: 1 1 320px;
+		max-width: 420px;
+	}
+
+	.lead {
+		display: grid;
+		grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+		gap: 20px;
+		align-items: start;
+	}
+
+	.now {
+		min-width: 0;
+	}
+
+	@media (max-width: 1100px) {
+		.lead {
+			grid-template-columns: minmax(0, 1fr);
+		}
 	}
 
 	.body {

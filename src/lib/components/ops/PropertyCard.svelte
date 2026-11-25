@@ -71,7 +71,7 @@
 		</dl>
 		<div class="sparks">
 			{#if statusNow}
-				<div><Sparkline values={summary.producedWaterSeries} {period} color="#5B7C99" label="Produced water by day for {property.name}" /><span>produced water by day</span></div>
+				<div><Sparkline values={summary.producedWaterSeries} {period} color="#4A6A86" label="Produced water by day for {property.name}" /><span>produced water by day</span></div>
 			{:else}
 				<div><Sparkline values={summary.waterSeries} {period} color="var(--ops-water)" label="Water by day for {property.name}" /><span>water by day</span></div>
 			{/if}
