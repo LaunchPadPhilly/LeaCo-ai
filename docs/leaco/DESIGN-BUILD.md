@@ -15,7 +15,7 @@ local e2e screenshots before its PR opens.
 | A4 | Map page: ship the full filter panel from the reference map now. Layers whose data isn't loaded say so; loading that data is a separate task. |
 | A5 | Background map: **Topo by default**, changed in **Settings → Map**, not on the map. |
 | A6 | Census "Public roads" stays removed (owner request, 2026-11-20). |
-| A7 | Every phase's PR targets **`dev`** first. After it has been reviewed in `dev`, a separate PR takes it from `dev` to `uat` (which deploys UAT). |
+| A7 | Every phase's PR targets **`dev`**. When all phases are reviewed and merged in `dev`, **one** PR takes the whole redesign from `dev` to `uat` (which deploys UAT). |
 
 ## Phases
 
